@@ -1,11 +1,8 @@
-import top.kagg886.pixko.InMemoryTokenStorage
-import top.kagg886.pixko.PixivAccount
-import top.kagg886.pixko.PixivAccountFactory
-import top.kagg886.pixko.TokenType
-import top.kagg886.pixko.module.illust.getRecommendIllust
-import top.kagg886.pixko.module.illust.searchIllust
+import io.ktor.client.plugins.logging.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
+import top.kagg886.pixko.*
+import top.kagg886.pixko.module.illust.*
 import kotlin.test.Test
 
 class IllustTest {
@@ -20,10 +17,35 @@ class IllustTest {
     @Test
     fun testSearch(): Unit = runBlocking {
         for (i in 1..3) {
-            client.searchIllust("原神", page = i).apply {
+            client.searchIllust("原神").apply {
                 println(this.illusts)
             }
         }
+    }
+
+    @Test
+    fun testRank(): Unit = runBlocking {
+        for (i in 1..3) {
+            client.getRankIllust(RankCategory.ORIGINAL, i).apply {
+                println(this)
+            }
+        }
+    }
+
+    @Test
+    fun testIllustDetail(): Unit = runBlocking {
+        val k = client.getIllustDetail(85297928)
+        println(k)
+    }
+
+    @Test
+    fun testBookmark():Unit = runBlocking {
+        assert(client.bookmarkIllust(85297928))
+    }
+
+    @Test
+    fun testDeleteBookmark():Unit = runBlocking {
+        client.deleteBookmarkIllust(85297928)
     }
 
     companion object {
@@ -32,20 +54,7 @@ class IllustTest {
         @JvmStatic
         @BeforeAll
         fun preparePixivClient() {
-            client = PixivAccountFactory.newAccountFromConfig {
-                storage = InMemoryTokenStorage().apply {
-                    setToken(TokenType.ACCESS, "Btz1IKo5SumN1APrEBLuKzDzAS6S_q55Pfo_r-wvI7I")
-                    setToken(TokenType.REFRESH, "xtkew_VEEQOxOW2xUeNE_Y8cX1g--Fhw9CtBAC6BVPQ")
-                }
-
-//                logger = PixivAccountConfig.LoggerProprieties(
-//                    LogLevel.BODY, object : Logger {
-//                        override fun log(message: String) {
-//                            println(message)
-//                        }
-//                    }
-//                )
-            }
+            client = AuthTest.generatePixivAccount()
         }
     }
 }

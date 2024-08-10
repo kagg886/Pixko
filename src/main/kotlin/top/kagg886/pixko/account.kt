@@ -1,12 +1,14 @@
 package top.kagg886.pixko
 
-import top.kagg886.pixko.internal.TokenAutoRefreshPlugin
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
+import top.kagg886.pixko.internal.TokenAutoRefreshPlugin
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 enum class TokenType {
     ACCESS, REFRESH

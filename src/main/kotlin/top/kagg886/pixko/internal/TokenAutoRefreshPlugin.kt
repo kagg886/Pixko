@@ -16,6 +16,8 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
+import kotlinx.coroutines.cancel
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -40,11 +42,9 @@ internal class TokenAutoRefreshPlugin(
             scope.requestPipeline.intercept(HttpRequestPipeline.Before) {
                 context.headers["Authorization"] = "Bearer ${storage.getToken(TokenType.ACCESS)}"
             }
-
-            scope.responsePipeline.intercept(HttpResponsePipeline.Receive) {
-                if (context.response.status == HttpStatusCode.BadRequest) {
-                    val (typeInfo, body) = subject
-                    val originBody = (body as ByteReadChannel).readUTF8Line()!!
+            scope.receivePipeline.intercept(HttpReceivePipeline.After) {
+                if (subject.status == HttpStatusCode.BadRequest) {
+                    val originBody = subject.bodyAsText()
 
                     if (originBody.contains("Invalid access token") || originBody.contains("Error occurred at the OAuth process")) {
                         HttpClient(CIO) {
@@ -70,12 +70,13 @@ internal class TokenAutoRefreshPlugin(
                                     ?: throw IllegalArgumentException("access_token is null")
                             storage.setToken(TokenType.ACCESS, accessToken)
 
-                            val realResp = scope.request(HttpRequestBuilder().takeFrom(context.request))
-                            proceedWith(HttpResponseContainer(typeInfo, realResp.bodyAsChannel()))
+                            val realResp = scope.request(HttpRequestBuilder().takeFrom(subject.request))
+//                            proceedWith(HttpResponseContainer(typeInfo, realResp.bodyAsChannel()))
+                            proceedWith(realResp)
                         }
                         return@intercept
                     }
-                    proceed()
+                    cancel(json.decodeFromString<JsonElement>(originBody).jsonObject["error"]!!.jsonObject.toString())
                 }
             }
         }

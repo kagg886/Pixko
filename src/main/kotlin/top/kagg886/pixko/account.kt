@@ -6,19 +6,32 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
+import top.kagg886.pixko.TokenType.ACCESS
+import top.kagg886.pixko.TokenType.REFRESH
 import top.kagg886.pixko.internal.TokenAutoRefreshPlugin
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
+/**
+ * # Token类型
+ * @property ACCESS
+ * @property REFRESH
+ */
 enum class TokenType {
     ACCESS, REFRESH
 }
 
+/**
+ * # Token存储器
+ * @see InMemoryTokenStorage
+ */
 interface TokenStorage {
     fun getToken(type: TokenType): String?
     fun setToken(type: TokenType, token: String)
 }
 
+/**
+ * # 将token存入内存的Token存储器
+ */
 class InMemoryTokenStorage : TokenStorage {
     private val map = mutableMapOf<TokenType, String>()
     override fun getToken(type: TokenType): String? = map[type]
@@ -28,8 +41,13 @@ class InMemoryTokenStorage : TokenStorage {
     }
 }
 
+/**
+ * # Pixiv账号配置
+ * @see PixivAccount
+ * @property storage token存储器
+ * @property logger 日志配置
+ */
 class PixivAccountConfig {
-
     data class LoggerProprieties(
         val level: LogLevel,
         val logger: Logger
@@ -39,6 +57,12 @@ class PixivAccountConfig {
     var logger: LoggerProprieties = LoggerProprieties(LogLevel.NONE, Logger.DEFAULT)
 }
 
+/**
+ * # PixivAPP Client
+ * 内部仅包含程序的核心部分，api定义在[top.kagg886.pixko.module]中
+ *
+ * @see PixivAccountFactory
+ */
 class PixivAccount internal constructor(private val config: PixivAccountConfig) :
     AutoCloseable {
 
@@ -54,10 +78,6 @@ class PixivAccount internal constructor(private val config: PixivAccountConfig) 
         install(Logging) {
             logger = config.logger.logger
             level = config.logger.level
-        }
-
-        install(Logging) {
-            level = LogLevel.BODY
         }
 
         defaultRequest {

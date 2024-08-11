@@ -8,6 +8,12 @@ import kotlinx.serialization.json.jsonObject
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.internal.json
 
+/**
+ * 获取插画详情
+ * @param illustId 插画id
+ * @return [Illust]
+ * @sample IllustTest.testIllustDetail
+ */
 suspend fun PixivAccount.getIllustDetail(illustId: Long): Illust {
     return client.get("https://app-api.pixiv.net/v1/illust/detail?illust_id=$illustId")
         .body<JsonElement>().jsonObject["illust"]!!.jsonObject.let {

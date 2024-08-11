@@ -6,14 +6,28 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import top.kagg886.pixko.PixivAccount
 
+/**
+ * # 收藏可见性
+ */
 enum class BookmarkVisibility {
     PUBLIC, PRIVATE
 }
 
+/**
+ * # 收藏设置
+ * @property visibility 可见性
+ */
 class BookmarkOptions {
     var visibility: BookmarkVisibility = BookmarkVisibility.PUBLIC
 }
 
+/**
+ * # 添加插画收藏
+ * @param illustId 插画id
+ * @param block 收藏设置
+ *
+ * @sample IllustTest.testBookmark
+ */
 suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.() -> Unit = {}): Boolean {
     val options = BookmarkOptions().apply(block)
     val resp = client.post("v2/illust/bookmark/add") {
@@ -29,6 +43,13 @@ suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.(
     }
     return resp.status == HttpStatusCode.OK
 }
+
+/**
+ * # 删除插画收藏
+ * @param illustId 插画id
+ *
+ * @sample IllustTest.testDeleteBookmark
+ */
 suspend fun PixivAccount.deleteBookmarkIllust(illustId: Long): Boolean {
     val resp = client.post("v2/illust/bookmark/delete") {
         contentType(ContentType.Application.FormUrlEncoded)

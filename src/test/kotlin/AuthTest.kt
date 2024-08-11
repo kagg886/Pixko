@@ -4,6 +4,8 @@ import top.kagg886.pixko.InMemoryTokenStorage
 import top.kagg886.pixko.PixivAccountConfig
 import top.kagg886.pixko.PixivAccountFactory
 import top.kagg886.pixko.TokenType
+import top.kagg886.pixko.module.illust.getRecommendIllust
+import java.util.Scanner
 import kotlin.test.Test
 
 class AuthTest {
@@ -13,7 +15,26 @@ class AuthTest {
 
         println(auth.url())
 
-        println(auth.verify("pixiv://account/login?code=1&via=login"))
+        println(auth.verify(readln()))
+    }
+
+    @Test
+    fun testFailAccessTokenGen(): Unit = runBlocking {
+        val client = PixivAccountFactory.newAccountFromConfig {
+            storage = InMemoryTokenStorage().apply {
+                setToken(TokenType.ACCESS, "awa")
+                setToken(TokenType.REFRESH, "qwq")
+            }
+
+            logger = PixivAccountConfig.LoggerProprieties(
+                LogLevel.BODY, object : Logger {
+                    override fun log(message: String) {
+                        println(message)
+                    }
+                }
+            )
+        }
+        println(client.getRecommendIllust())
     }
 
     companion object {

@@ -1,27 +1,20 @@
 package top.kagg886.pixko.internal
 
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.*
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.util.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import top.kagg886.pixko.TokenStorage
 import top.kagg886.pixko.TokenType
 import top.kagg886.pixko.pixiv_client_id
 import top.kagg886.pixko.pixiv_client_secret
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.*
-import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
-import kotlinx.coroutines.cancel
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlin.io.use
 
 internal class TokenAutoRefreshPlugin(
     val tokenStorage: TokenStorage
@@ -47,37 +40,39 @@ internal class TokenAutoRefreshPlugin(
                     val originBody = subject.bodyAsText()
 
                     if (originBody.contains("Invalid access token") || originBody.contains("Error occurred at the OAuth process")) {
-                        HttpClient(CIO) {
-                            install(ContentNegotiation) {
-                                json(json)
-                            }
-                        }.use { client ->
-                            val resp = client.post("https://oauth.secure.pixiv.net/auth/token") {
-                                contentType(ContentType.Application.FormUrlEncoded)
-                                setBody(
-                                    listOf(
-                                        "client_id" to pixiv_client_id,
-                                        "client_secret" to pixiv_client_secret,
-                                        "grant_type" to "refresh_token",
-                                        "refresh_token" to storage.getToken(TokenType.REFRESH),
-                                        "include_policy" to true
-                                    ).joinToString("&") { (k, v) -> "$k=$v" }
+                        val body = scope.post("https://oauth.secure.pixiv.net/auth/token") {
+                            contentType(ContentType.Application.FormUrlEncoded)
+                            setBody(
+                                FormDataContent(
+                                    Parameters.build {
+                                        append("client_id", pixiv_client_id)
+                                        append("client_secret", pixiv_client_secret)
+                                        append("grant_type", "refresh_token")
+                                        append("refresh_token", storage.getToken(TokenType.REFRESH)!!)
+                                        append("include_policy", "true")
+                                    }
                                 )
-                            }.body<JsonElement>().jsonObject
-
-                            val accessToken =
-                                resp["access_token"]?.jsonPrimitive?.content
-                                    ?: throw IllegalArgumentException("access_token is null")
-                            storage.setToken(TokenType.ACCESS, accessToken)
-
-                            val realResp = scope.request(HttpRequestBuilder().takeFrom(subject.request))
-//                            proceedWith(HttpResponseContainer(typeInfo, realResp.bodyAsChannel()))
-                            proceedWith(realResp)
+                            )
                         }
-                        return@intercept
+
+                        val resp = body.body<JsonElement>().jsonObject
+
+                        val accessToken =
+                            resp["access_token"]?.jsonPrimitive?.content
+                                ?: throw IllegalArgumentException("access_token is null")
+                        storage.setToken(TokenType.ACCESS, accessToken)
+
+                        val realResp = scope.request(HttpRequestBuilder().takeFrom(subject.request))
+                        proceedWith(realResp)
                     }
-                    cancel(json.decodeFromString<JsonElement>(originBody).jsonObject["error"]!!.jsonObject.toString())
+                    return@intercept
                 }
+                check(subject.status == HttpStatusCode.OK) {
+                    json.decodeFromString<JsonElement>(subject.bodyAsText()).jsonObject["error"]?.let {
+                        it.jsonObject["user_message"]!!.jsonPrimitive.content
+                    } ?: "unknown error"
+                }
+                return@intercept
             }
         }
     }

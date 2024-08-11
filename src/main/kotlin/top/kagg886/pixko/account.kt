@@ -5,6 +5,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
+import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
 import top.kagg886.pixko.TokenType.ACCESS
 import top.kagg886.pixko.TokenType.REFRESH
@@ -46,6 +47,7 @@ class InMemoryTokenStorage : TokenStorage {
  * @see PixivAccount
  * @property storage token存储器
  * @property logger 日志配置
+ * @property language 语言配置，置null则为日文。
  */
 class PixivAccountConfig {
     data class LoggerProprieties(
@@ -55,6 +57,7 @@ class PixivAccountConfig {
 
     var storage: TokenStorage = InMemoryTokenStorage()
     var logger: LoggerProprieties = LoggerProprieties(LogLevel.NONE, Logger.DEFAULT)
+    var language: String? = "zh-CN"
 }
 
 /**
@@ -82,6 +85,7 @@ class PixivAccount internal constructor(private val config: PixivAccountConfig) 
 
         defaultRequest {
             url("https://app-api.pixiv.net/")
+            header("Accept-Language", config.language)
         }
     }
 

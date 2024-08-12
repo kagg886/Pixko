@@ -52,7 +52,7 @@ data class SearchConfig(
  * @param word 搜索关键词
  * @param block 搜索配置
  * @return [IllustResult] 搜索结果
- * @sample IllustTest.testSearch
+ * 
  */
 suspend fun PixivAccount.searchIllust(
     word: String,

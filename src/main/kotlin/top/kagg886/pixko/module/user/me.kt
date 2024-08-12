@@ -59,7 +59,7 @@ data class SimpleMeProfile(
 /**
  * # 获取当前登录用户的一些信息
  * @return [SimpleMeProfile] 简介
- * @sample UserTest.testProfile
+ * 
  */
 suspend fun PixivAccount.getCurrentUserSimpleProfile(): SimpleMeProfile {
     return json.decodeFromJsonElement(client.get("v1/user/me/state").body<JsonElement>().jsonObject["profile"]!!)

@@ -26,7 +26,7 @@ class BookmarkOptions {
  * @param illustId 插画id
  * @param block 收藏设置
  *
- * @sample IllustTest.testBookmark
+ * 
  */
 suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.() -> Unit = {}): Boolean {
     val options = BookmarkOptions().apply(block)
@@ -48,7 +48,7 @@ suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.(
  * # 删除插画收藏
  * @param illustId 插画id
  *
- * @sample IllustTest.testDeleteBookmark
+ * 
  */
 suspend fun PixivAccount.deleteBookmarkIllust(illustId: Long): Boolean {
     val resp = client.post("v2/illust/bookmark/delete") {

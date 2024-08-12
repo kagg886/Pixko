@@ -29,7 +29,7 @@ enum class RankCategory(val content: String) {
  * @param mode 排行榜类型
  * @param page 页码
  * @return [IllustResult]
- * @sample IllustTest.testRank
+ * 
  */
 suspend fun PixivAccount.getRankIllust(mode: RankCategory, page: Int = 1): IllustResult {
     return client.get("v1/illust/ranking") {

@@ -1,5 +1,6 @@
 package top.kagg886.pixko.module.user
 
+import UserTest
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.datetime.LocalDate
@@ -182,7 +183,7 @@ data class UserProfile(
  * # 获取用户信息
  * @param userId 用户id
  * @return [UserInfo] 用户信息
- * @sample UserTest.testUserDetail
+ * 
  */
 suspend fun PixivAccount.getUserInfo(userId: Int): UserInfo {
     return client.get("v1/user/detail?filter=for_android") {

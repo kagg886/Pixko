@@ -47,7 +47,7 @@ class AuthTest {
                 }
 
                 logger = PixivAccountConfig.LoggerProprieties(
-                    LogLevel.BODY, object : Logger {
+                    LogLevel.ALL, object : Logger {
                         override fun log(message: String) {
                             println(message)
                         }

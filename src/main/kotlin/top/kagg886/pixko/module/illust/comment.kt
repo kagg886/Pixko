@@ -63,7 +63,7 @@ data class SuperFace(
  * @param page 页码，默认值为1
  * @return 评论列表
  *
- * @sample CommentTest.testCommentList
+ * 
  */
 suspend fun PixivAccount.getIllustComment(illustId: Long, page: Int = 1): CommentListResult {
     return client.get("v3/illust/comments") {
@@ -78,7 +78,7 @@ suspend fun PixivAccount.getIllustComment(illustId: Long, page: Int = 1): Commen
  * @param commentId 评论id
  * @param page 页码，默认值为1
  * @return 回复列表
- * @sample CommentTest.testCommentReplyList
+ * 
  */
 suspend fun PixivAccount.getIllustCommentReply(commentId: Long, page: Int = 1): CommentListResult {
     return client.get("v2/illust/comment/replies") {
@@ -105,8 +105,8 @@ class IllustComment {
  *
  * @param block 配置
  * @return 发送的评论配置
- * @sample CommentTest.testSendComment
- * @sample CommentTest.testCommentReplyList
+ * 
+ * 
  */
 suspend fun PixivAccount.sendIllustComment(block: IllustComment.() -> Unit): Comment {
     @Serializable
@@ -135,7 +135,7 @@ suspend fun PixivAccount.sendIllustComment(block: IllustComment.() -> Unit): Com
  * # 删除评论
  *
  * @param commentId 评论id
- * @sample CommentTest.testCommentDelete
+ * 
  */
 suspend fun PixivAccount.deleteIllustComment(commentId: Long) {
     client.post("v1/illust/comment/delete") {

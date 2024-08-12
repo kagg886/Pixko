@@ -33,9 +33,13 @@ internal class TokenAutoRefreshPlugin(
                 context.headers["Authorization"] = "Bearer ${storage.getToken(TokenType.ACCESS)}"
             }
             scope.receivePipeline.intercept(HttpReceivePipeline.After) {
-                if (subject.status == HttpStatusCode.BadRequest) {
-                    val originBody = subject.bodyAsText()
+                val subject = subject.call.save().response
+                proceedWith(subject)
+                val originBody = kotlin.runCatching {
+                    subject.bodyAsText()
+                }.getOrElse { "" }
 
+                if (subject.status == HttpStatusCode.BadRequest) {
                     if (originBody.contains("Invalid access token") || originBody.contains("Error occurred at the OAuth process")) {
                         val body = kotlin.runCatching {
                             scope.post("https://oauth.secure.pixiv.net/auth/token") {
@@ -53,7 +57,7 @@ internal class TokenAutoRefreshPlugin(
                                 )
                             }
                             //对外隐藏auth/token请求。一般来说这个阶段抛出错误导致REFRESH_TOKEN丢失，需要重新登录。
-                        }.getOrNull() ?: throw PixivException(subject.call.request.url.toString(), subject)
+                        }.getOrNull() ?: throw PixivException(subject.call.request.url.toString(), originBody)
 
                         val resp = body.body<JsonElement>().jsonObject
 
@@ -62,19 +66,15 @@ internal class TokenAutoRefreshPlugin(
                                 ?: throw IllegalArgumentException("access_token is null")
                         storage.setToken(TokenType.ACCESS, accessToken)
 
-                        val realResp = scope.request(HttpRequestBuilder().takeFrom(subject.request))
+                        val realResp =
+                            scope.request(HttpRequestBuilder().takeFrom(subject.request)).call.save().response
                         proceedWith(realResp)
                         return@intercept
                     }
                 }
                 if (subject.status != HttpStatusCode.OK) {
-                    throw PixivException(subject.call.request.url.toString(), subject)
+                    throw PixivException(subject.call.request.url.toString(), originBody)
                 }
-//                check(subject.status == HttpStatusCode.OK) {
-//                    json.decodeFromString<JsonElement>(subject.bodyAsText()).jsonObject["error"]?.let {
-//                        it.jsonObject["user_message"]!!.jsonPrimitive.content
-//                    } ?: "unknown error"
-//                }
             }
         }
     }

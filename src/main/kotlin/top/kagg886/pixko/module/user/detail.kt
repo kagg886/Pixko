@@ -7,6 +7,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.User
+import top.kagg886.pixko.module.profile.CountryCode
+import top.kagg886.pixko.module.profile.JapanAddress
+import top.kagg886.pixko.module.profile.Job
 import top.kagg886.pixko.module.user.Gender.*
 import top.kagg886.pixko.module.user.UserPublicityOptions.*
 
@@ -19,13 +22,10 @@ import top.kagg886.pixko.module.user.UserPublicityOptions.*
  */
 @Serializable
 data class UserInfo(
-    val user: User,
-    val profile: UserProfile,
+    val user: User, val profile: UserProfile,
 
     //针对其他用户都是public
-    @SerialName("profile_publicity")
-    val publicity: UserPublicity,
-    val workspace: UserWorkspace
+    @SerialName("profile_publicity") val publicity: UserPublicity, val workspace: UserWorkspace
 )
 
 /**
@@ -35,9 +35,7 @@ data class UserInfo(
  * @property private 私密
  */
 enum class UserPublicityOptions {
-    public,
-    mypixiv,
-    private,
+    public, mypixiv, private,
 }
 
 /**
@@ -109,8 +107,8 @@ enum class Gender {
  * @property _gender 性别字段，建议使用[gender]
  * @property _birth 生日字段，建议使用[birth]
  * @property region 地区
- * @property addressId 地址id
- * @property job 工作
+ * @property addressId 地址id，建议使用[address]
+ * @property job 工作，建议使用[job]
  * @property totalFollowUsers 关注用户数
  * @property totalMyPixivUsers 好P友数
  * @property totalIllusts 作品数
@@ -131,13 +129,11 @@ data class UserProfile(
     val webpage: String?,
     @SerialName("gender") private val _gender: String,
 
-    @SerialName("birth")
-    internal val _birth: String,
+    @SerialName("birth") internal val _birth: String,
     val region: String,
-    @SerialName("address_id") val addressId: Int,
-
-    //为空则未设置
-    val job: String,
+    @SerialName("address_id") internal val addressId: Int,
+    @SerialName("country_code") internal val countryCode: String,
+    @SerialName("job_id") internal val jobId: Int,
     @SerialName("total_follow_users") val totalFollowUsers: Int,
     @SerialName("total_mypixiv_users") val totalMyPixivUsers: Int,
     @SerialName("total_illusts") val totalIllusts: Int,
@@ -158,10 +154,10 @@ data class UserProfile(
      */
     val gender by lazy {
         when (_gender) {
-            "male" -> Gender.MALE
-            "female" -> Gender.FEMALE
-            "unknown" -> Gender.UNKNOWN
-            else -> Gender.NOT_PUBLIC
+            "male" -> MALE
+            "female" -> FEMALE
+            "unknown" -> UNKNOWN
+            else -> NOT_PUBLIC
         }
     }
 
@@ -174,6 +170,32 @@ data class UserProfile(
         } else {
             LocalDate.parse(_birth)
         }
+    }
+
+    /**
+     * 地区
+     * 0代表未设置
+     */
+    val address by lazy {
+        JapanAddress.fromCode(addressId)!!
+    }
+
+    /**
+     * 国家代号
+     */
+    val country by lazy {
+        when (address) {
+            JapanAddress.UN_SETTING -> CountryCode.UN_SETTING
+            JapanAddress.INTERNATIONAL -> CountryCode.fromCode(countryCode)
+            else -> CountryCode.JAPAN
+        }
+    }
+
+    /**
+     * 工作代号
+     */
+    val job by lazy {
+        Job.fromCode(jobId)
     }
 }
 

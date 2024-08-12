@@ -15,11 +15,11 @@ data class Tag(
     val translatedName: String? = null
 ) {
     override fun toString(): String {
-        return name
+        return translatedName ?: name
     }
 
     override fun hashCode(): Int {
-        return name.hashCode()
+        return toString().hashCode()
     }
 
     override fun equals(other: Any?): Boolean {

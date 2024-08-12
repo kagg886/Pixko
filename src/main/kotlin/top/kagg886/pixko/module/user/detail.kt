@@ -1,6 +1,5 @@
 package top.kagg886.pixko.module.user
 
-import UserTest
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.datetime.LocalDate
@@ -9,7 +8,7 @@ import kotlinx.serialization.Serializable
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.User
 import top.kagg886.pixko.module.user.Gender.*
-import top.kagg886.pixko.module.user.Publicity.*
+import top.kagg886.pixko.module.user.UserPublicityOptions.*
 
 /**
  * # 用户信息
@@ -35,7 +34,7 @@ data class UserInfo(
  * @property mypixiv 好P友可见
  * @property private 私密
  */
-enum class Publicity {
+enum class UserPublicityOptions {
     public,
     mypixiv,
     private,
@@ -85,11 +84,11 @@ data class UserWorkspace(
  */
 @Serializable
 data class UserPublicity(
-    val gender: Publicity,
-    val region: Publicity,
-    @SerialName("birth_day") val birthDay: Publicity,
-    @SerialName("birth_year") val birthYear: Publicity,
-    val job: Publicity,
+    val gender: UserPublicityOptions,
+    val region: UserPublicityOptions,
+    @SerialName("birth_day") val birthDay: UserPublicityOptions,
+    @SerialName("birth_year") val birthYear: UserPublicityOptions,
+    val job: UserPublicityOptions,
     val pawoo: Boolean
 )
 
@@ -183,7 +182,7 @@ data class UserProfile(
  * # 获取用户信息
  * @param userId 用户id
  * @return [UserInfo] 用户信息
- * 
+ *
  */
 suspend fun PixivAccount.getUserInfo(userId: Int): UserInfo {
     return client.get("v1/user/detail?filter=for_android") {

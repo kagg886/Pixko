@@ -1,8 +1,9 @@
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.module.illust.IllustResult
 import top.kagg886.pixko.module.user.*
-import java.util.UUID
+import java.util.*
 import kotlin.test.Test
 
 class UserTest {
@@ -28,8 +29,13 @@ class UserTest {
     }
 
     @Test
-    fun testUserEdit():Unit = runBlocking {
-        client.setCurrentUserProfile(UserProfileConfig())
+    fun testBookmarkList(): Unit = runBlocking {
+        val userId = client.getCurrentUserSimpleProfile().userId
+        var a: IllustResult? = client.getUserLikeIllust(userId)
+        while (a != null) {
+            a = client.getUserLikeIllustNext(a) ?: break
+            println(a)
+        }
     }
 
     companion object {

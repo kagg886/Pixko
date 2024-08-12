@@ -87,4 +87,7 @@ data class User(
     val account: String,
     @SerialName("profile_image_urls")
     val profileImageUrls: ImageUrls,
+
+    @SerialName("is_followed")
+    val isFollowed: Boolean? = null,
 )

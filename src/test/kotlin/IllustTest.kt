@@ -1,8 +1,9 @@
-import io.ktor.client.plugins.logging.*
+
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
-import top.kagg886.pixko.*
+import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.*
+import top.kagg886.pixko.module.search.searchIllust
 import kotlin.test.Test
 
 class IllustTest {

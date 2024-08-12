@@ -1,9 +1,8 @@
+
 import io.ktor.client.plugins.logging.*
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.assertThrows
 import top.kagg886.pixko.*
 import top.kagg886.pixko.module.illust.getRecommendIllust
-import java.util.Scanner
 import kotlin.test.Test
 
 class AuthTest {

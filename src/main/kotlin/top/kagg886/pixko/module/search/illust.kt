@@ -1,11 +1,12 @@
-package top.kagg886.pixko.module.illust
+package top.kagg886.pixko.module.search
 
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.datetime.LocalDateTime
 import top.kagg886.pixko.PixivAccount
-import top.kagg886.pixko.module.illust.SearchSort.*
-import top.kagg886.pixko.module.illust.SearchTarget.*
+import top.kagg886.pixko.module.illust.IllustResult
+import top.kagg886.pixko.module.search.SearchSort.*
+import top.kagg886.pixko.module.search.SearchTarget.*
 
 /**
  * 搜索结果

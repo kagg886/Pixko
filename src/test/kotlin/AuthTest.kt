@@ -1,9 +1,7 @@
 import io.ktor.client.plugins.logging.*
 import kotlinx.coroutines.runBlocking
-import top.kagg886.pixko.InMemoryTokenStorage
-import top.kagg886.pixko.PixivAccountConfig
-import top.kagg886.pixko.PixivAccountFactory
-import top.kagg886.pixko.TokenType
+import org.junit.jupiter.api.assertThrows
+import top.kagg886.pixko.*
 import top.kagg886.pixko.module.illust.getRecommendIllust
 import java.util.Scanner
 import kotlin.test.Test
@@ -34,7 +32,10 @@ class AuthTest {
                 }
             )
         }
-        println(client.getRecommendIllust())
+        val t = kotlin.runCatching {
+            client.getRecommendIllust()
+        }.exceptionOrNull()!! as PixivException
+        println(t)
     }
 
     companion object {

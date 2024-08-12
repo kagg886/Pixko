@@ -4,15 +4,19 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.datetime.LocalDateTime
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.module.illust.SearchSort.*
+import top.kagg886.pixko.module.illust.SearchTarget.*
 
 /**
  * 搜索结果
- * @property DESC 降序
- * @property ASC 升序
+ * @property DATE_DESC 按时间降序
+ * @property DATE_ASC 按时间升序
+ * @property POPULAR_DESC 按热度降序
  */
 enum class SearchSort {
-    DESC,
-    ASC
+    DATE_DESC,
+    DATE_ASC,
+    POPULAR_DESC
 }
 
 /**
@@ -36,7 +40,7 @@ enum class SearchTarget {
  * @property page 页码
  */
 data class SearchConfig(
-    var sort: SearchSort = SearchSort.DESC,
+    var sort: SearchSort = SearchSort.DATE_DESC,
     var searchTarget: SearchTarget = SearchTarget.PARTIAL_MATCH_FOR_TAGS,
     var startDate: LocalDateTime? = null,
     var endDate: LocalDateTime? = null,
@@ -59,7 +63,7 @@ suspend fun PixivAccount.searchIllust(
         parameter("filter", "for_android")
         parameter("include_translated_tag_results", true)
         parameter("word", word)
-        parameter("sort", "date_${sort.name.lowercase()}")
+        parameter("sort", sort.name.lowercase())
         parameter("search_target", searchTarget.name.lowercase())
         if (startDate != null) {
             parameter("start_date", startDate.toString())

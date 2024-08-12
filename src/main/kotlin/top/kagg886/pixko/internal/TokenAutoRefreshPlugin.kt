@@ -11,10 +11,7 @@ import io.ktor.util.*
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import top.kagg886.pixko.TokenStorage
-import top.kagg886.pixko.TokenType
-import top.kagg886.pixko.pixiv_client_id
-import top.kagg886.pixko.pixiv_client_secret
+import top.kagg886.pixko.*
 
 internal class TokenAutoRefreshPlugin(
     val tokenStorage: TokenStorage
@@ -40,20 +37,23 @@ internal class TokenAutoRefreshPlugin(
                     val originBody = subject.bodyAsText()
 
                     if (originBody.contains("Invalid access token") || originBody.contains("Error occurred at the OAuth process")) {
-                        val body = scope.post("https://oauth.secure.pixiv.net/auth/token") {
-                            contentType(ContentType.Application.FormUrlEncoded)
-                            setBody(
-                                FormDataContent(
-                                    Parameters.build {
-                                        append("client_id", pixiv_client_id)
-                                        append("client_secret", pixiv_client_secret)
-                                        append("grant_type", "refresh_token")
-                                        append("refresh_token", storage.getToken(TokenType.REFRESH)!!)
-                                        append("include_policy", "true")
-                                    }
+                        val body = kotlin.runCatching {
+                            scope.post("https://oauth.secure.pixiv.net/auth/token") {
+                                contentType(ContentType.Application.FormUrlEncoded)
+                                setBody(
+                                    FormDataContent(
+                                        Parameters.build {
+                                            append("client_id", pixiv_client_id)
+                                            append("client_secret", pixiv_client_secret)
+                                            append("grant_type", "refresh_token")
+                                            append("refresh_token", storage.getToken(TokenType.REFRESH)!!)
+                                            append("include_policy", "true")
+                                        }
+                                    )
                                 )
-                            )
-                        }
+                            }
+                            //对外隐藏auth/token请求。一般来说这个阶段抛出错误导致REFRESH_TOKEN丢失，需要重新登录。
+                        }.getOrNull() ?: throw PixivException(subject.call.request.url.toString(), subject)
 
                         val resp = body.body<JsonElement>().jsonObject
 
@@ -64,15 +64,17 @@ internal class TokenAutoRefreshPlugin(
 
                         val realResp = scope.request(HttpRequestBuilder().takeFrom(subject.request))
                         proceedWith(realResp)
+                        return@intercept
                     }
-                    return@intercept
                 }
-                check(subject.status == HttpStatusCode.OK) {
-                    json.decodeFromString<JsonElement>(subject.bodyAsText()).jsonObject["error"]?.let {
-                        it.jsonObject["user_message"]!!.jsonPrimitive.content
-                    } ?: "unknown error"
+                if (subject.status != HttpStatusCode.OK) {
+                    throw PixivException(subject.call.request.url.toString(), subject)
                 }
-                return@intercept
+//                check(subject.status == HttpStatusCode.OK) {
+//                    json.decodeFromString<JsonElement>(subject.bodyAsText()).jsonObject["error"]?.let {
+//                        it.jsonObject["user_message"]!!.jsonPrimitive.content
+//                    } ?: "unknown error"
+//                }
             }
         }
     }

@@ -1,10 +1,19 @@
+import com.vanniktech.maven.publish.KotlinJvm
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.0"
+    id("com.vanniktech.maven.publish") version "0.29.0"
 }
+val release: String by project
+group = "top.kagg886"
+version = "1.0"
 
-group = "io.github.pixko"
-version = "1.0-SNAPSHOT"
+if (!release.toBoolean()) {
+    version = version.toString() + "-" + getGitSha()
+    println("Use debug mode, version is $version")
+}
 
 repositories {
     mavenCentral()
@@ -30,3 +39,52 @@ tasks.test {
 kotlin {
     jvmToolchain(11)
 }
+
+mavenPublishing {
+    configure(
+        KotlinJvm(
+            // whether to publish a sources jar
+            sourcesJar = true,
+        )
+    )
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+    coordinates(group.toString(), rootProject.name, version.toString())
+    pom {
+        name = "Pixko"
+        description = "An api accesser for pixiv writed by kotlin "
+        inceptionYear = "2024"
+        url = "https://github.com/kagg886/Pixko/"
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "kagg886"
+                name = "kagg886"
+                url = "https://github.com/kagg886/"
+            }
+        }
+        scm {
+            url = "https://github.com/kagg886/Pixko/"
+            connection = "scm:git:git://github.com/kagg886/Pixko.git"
+            developerConnection = "scm:git:ssh://git@github.com/kagg886/Pixko.git"
+        }
+    }
+}
+
+fun getGitSha(): String {
+    val out = Runtime.getRuntime().exec("git rev-parse --short HEAD").inputStream
+    return out.readNBytes(7).decodeToString()
+}
+//String getGitSha() {
+//    InputStream out = Runtime.getRuntime().exec("git rev-parse --short HEAD").getInputStream()
+//    byte[] a = new byte[7]
+//    out.read(a)
+//    out.close()
+//    return new String(a)
+//}

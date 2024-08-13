@@ -24,10 +24,27 @@ class NovelTest {
     }
 
     @Test
+    fun testSeriesList(): Unit = runBlocking {
+        val novel = client.getNovelSeries(9714240)
+        println(novel)
+    }
+
+    @Test
     fun testNovelContent():Unit = runBlocking {
 
         //测试版本：22767441
         val novel = client.getNovelContent(22767441)
+        println(novel)
+    }
+
+    @Test
+    fun testNovelBookmark():Unit = runBlocking {
+        client.bookmarkNovel(21844391)
+    }
+
+    @Test
+    fun testNovelBookmarkDelete():Unit = runBlocking {
+        val novel = client.deleteBookmarkNovel(21844391)
         println(novel)
     }
 

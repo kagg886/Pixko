@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.internal.json
 import top.kagg886.pixko.module.illust.IllustResult
+import top.kagg886.pixko.module.illust.NovelResult
 import top.kagg886.pixko.module.profile.CountryCode
 import top.kagg886.pixko.module.profile.JapanAddress
 import top.kagg886.pixko.module.user.*
@@ -74,12 +75,22 @@ class UserTest {
     }
 
     @Test
-    fun testBookmarkList(): Unit = runBlocking {
+    fun testBookmarkIllustList(): Unit = runBlocking {
         val userId = client.getCurrentUserSimpleProfile().userId
         var a: IllustResult? = client.getUserLikeIllust(userId)
         while (a != null) {
             a = client.getUserLikeIllustNext(a) ?: break
             println(a)
+        }
+    }
+
+    @Test
+    fun testBookmarkNovelList(): Unit = runBlocking {
+        val userId = client.getCurrentUserSimpleProfile().userId
+        var a: NovelResult? = client.getUserLikeNovel(userId)
+        while (a != null) {
+            println(a)
+            a = client.getUserLikeNovelNext(a) ?: break
         }
     }
 

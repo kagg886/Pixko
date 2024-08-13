@@ -1,7 +1,7 @@
 package top.kagg886.pixko.module.novel.parser
 
 
-enum class Type(val blocking: Boolean, val double: Boolean = true) {
+enum class NovelContentBlockType(val blocking: Boolean, val double: Boolean = true) {
     PLAIN(false, false),
     JUMP_URI(false, false), //[[jumpuri:详情>链接]]
     NOTATION(blocking = false, false),//[[rb:文本>注音]]
@@ -15,7 +15,7 @@ enum class Type(val blocking: Boolean, val double: Boolean = true) {
 }
 
 data class TextNode(
-    val type: Type,
+    val novelContentBlockType: NovelContentBlockType,
     val value: String? = null,
     val metadata: String? = null,
     val position: IntRange

@@ -10,8 +10,8 @@ import top.kagg886.pixko.User
 @Serializable
 data class NovelResult(
     @SerialName("next_url")
-    val nextUrl:String? = null,
-    val novels:List<Novel>
+    val nextUrl: String? = null,
+    val novels: List<Novel>
 )
 
 /**
@@ -46,7 +46,7 @@ data class Novel(
     @SerialName("text_length")
     val textLength: Int,
     val user: User,
-
+    val series: SimpleSeries,
     @SerialName("is_bookmarked")
     val isBookmarked: Boolean,
     @SerialName("total_bookmarks")
@@ -64,4 +64,21 @@ data class Novel(
      * 判断小说是否为ai创作
      */
     val isAI = novelAiType == 2
+}
+
+/**
+ * # 代表了小说系列
+ * @property id 系列id
+ * @property title 系列标题
+ */
+@Serializable
+data class SimpleSeries(
+    val id: Int? = -1,
+    val title: String = "",
+) {
+    /**
+     * 判断系列是否有效
+     * 无效的系列id默认置为-1
+     */
+    val isNull = id == -1
 }

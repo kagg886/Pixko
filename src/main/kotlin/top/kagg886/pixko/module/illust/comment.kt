@@ -12,7 +12,7 @@ import top.kagg886.pixko.User
 import kotlin.properties.Delegates
 
 @Serializable
-private data class CommentListResult(
+internal data class CommentListResult(
     @SerialName("comments")
     val comments: List<Comment>,
     @SerialName("next_url")

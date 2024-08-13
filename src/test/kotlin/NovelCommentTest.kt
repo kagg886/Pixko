@@ -1,48 +1,51 @@
+
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
-import top.kagg886.pixko.module.illust.deleteIllustComment
-import top.kagg886.pixko.module.illust.getIllustComment
-import top.kagg886.pixko.module.illust.getIllustCommentReply
-import top.kagg886.pixko.module.illust.sendIllustComment
+import top.kagg886.pixko.module.novel.deleteNovelComment
+import top.kagg886.pixko.module.novel.getNovelComment
+import top.kagg886.pixko.module.novel.getNovelCommentReply
+import top.kagg886.pixko.module.novel.sendNovelComment
 import kotlin.test.Test
 
-class CommentTest {
+class NovelCommentTest {
     @Test
     fun testCommentList(): Unit = runBlocking {
-        val list = client.getIllustComment(120472631)
+        val list = client.getNovelComment(21844391)
+    }
+
+
+    @Test
+    fun testCommentReplyList(): Unit = runBlocking {
+        val result = client.getNovelCommentReply(49294666)
+        println(result)
     }
 
     @Test
     fun testSendComment(): Unit = runBlocking {
-        val result = client.sendIllustComment {
+        val result = client.sendNovelComment {
             comment = "测试评论"
-            illustId = 120472631
+            novelId = 21844391
         }
         println(result)
     }
 
     @Test
     fun testSendCommentReply(): Unit = runBlocking {
-        val result = client.sendIllustComment {
+        val result = client.sendNovelComment {
             comment = "测试回复"
-            illustId = 120472631
-            parentCommentId = 181680577
+            novelId = 21844391
+            parentCommentId = 49294734
         }
         println(result)
     }
 
     @Test
     fun testCommentDelete(): Unit = runBlocking {
-        val result = client.deleteIllustComment(181680577)
+        val result = client.deleteNovelComment(49294742)
         println(result)
     }
 
-    @Test
-    fun testCommentReplyList(): Unit = runBlocking {
-        val result = client.getIllustCommentReply(181680577)
-        println(result)
-    }
 
     companion object {
         lateinit var client: PixivAccount

@@ -1,6 +1,6 @@
 package top.kagg886.pixko.module.novel.parser
 
-import top.kagg886.pixko.module.novel.parser.Type.*
+import top.kagg886.pixko.module.novel.parser.NovelContentBlockType.*
 
 
 private val JUMP_URI_REGEX = "\\[\\[jumpuri:(.*)>(.*)]]".toRegex()
@@ -13,25 +13,25 @@ private val JUMP_PAGE_REGEX = "\\[jump:(.*)]".toRegex()
 fun createNovelData(str: String): List<TextNode> {
     val result = mutableListOf<TextNode>()
 
-    str.findAllJumpUri().forEach { i ->
+    JUMP_URI_REGEX.findAll(str).forEach { i ->
         result.add(TextNode(JUMP_URI, i.groupValues[1], i.groupValues[2], i.range))
     }
-    str.findAllNotation().forEach { i ->
+    NOTATION_REGEX.findAll(str).forEach { i ->
         result.add(TextNode(NOTATION, i.groupValues[1], i.groupValues[2], i.range))
     }
-    str.findAllUploadImage().forEach { i ->
+    UPLOAD_IMAGE_REGEX.findAll(str).forEach { i ->
         result.add(TextNode(UPLOAD_IMAGE, i.groupValues[1], null, i.range))
     }
-    str.findAllPixivImage().forEach { i ->
+    PIXIV_IMAGE_REGEX.findAll(str).forEach { i ->
         result.add(TextNode(PIXIV_IMAGE, i.groupValues[1], null, i.range))
     }
-    str.findAllNewPage().forEach { i ->
+    NEW_PAGE_REGEX.findAll(str).forEach { i ->
         result.add(TextNode(NEW_PAGE, null, null, i.range))
     }
-    str.findAllChapter().forEach { i ->
+    CHAPTER_REGEX.findAll(str).forEach { i ->
         result.add(TextNode(TITLE, i.groupValues[1], null, i.range))
     }
-    str.findAllJumpPage().forEach { i ->
+    JUMP_PAGE_REGEX.findAll(str).forEach { i ->
         result.add(TextNode(JUMP_PAGE, i.groupValues[1], null, i.range))
     }
     result.sortBy {
@@ -65,7 +65,7 @@ fun List<TextNode>.toOriginalString(): String {
     return buildString {
         this@toOriginalString.forEach { v ->
             append(
-                when (v.type) {
+                when (v.novelContentBlockType) {
                     PLAIN -> v.value!!
                     JUMP_URI -> "[[jumpuri:${v.value}>${v.metadata}]]"
                     NOTATION -> "[[rb:${v.value}>${v.metadata}]]"
@@ -78,41 +78,4 @@ fun List<TextNode>.toOriginalString(): String {
             )
         }
     }
-}
-
-private fun String.findAllJumpPage(): List<MatchResult> {
-    val result = JUMP_PAGE_REGEX.findAll(this)
-    return result.toList()
-}
-
-private fun String.findAllChapter(): List<MatchResult> {
-    val result = CHAPTER_REGEX.findAll(this)
-    return result.toList()
-}
-
-
-private fun String.findAllNewPage(): List<MatchResult> {
-    val result = NEW_PAGE_REGEX.findAll(this)
-    return result.toList()
-}
-
-private fun String.findAllPixivImage(): List<MatchResult> {
-    val result = PIXIV_IMAGE_REGEX.findAll(this)
-    return result.toList()
-}
-
-private fun String.findAllUploadImage(): List<MatchResult> {
-    val result = UPLOAD_IMAGE_REGEX.findAll(this)
-    return result.toList()
-}
-
-private fun String.findAllNotation(): List<MatchResult> {
-    val result = NOTATION_REGEX.findAll(this)
-    return result.toList()
-}
-
-
-private fun String.findAllJumpUri(): List<MatchResult> {
-    val result = JUMP_URI_REGEX.findAll(this)
-    return result.toList()
 }

@@ -3,6 +3,7 @@ package top.kagg886.pixko.module.illust
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.module.illust.RankCategory.*
 
 /**
  * # 排行榜类型
@@ -25,13 +26,13 @@ enum class RankCategory(val content: String) {
 }
 
 /**
- * # 获取某一排行榜的内容
+ * # 获取插画榜单中某一分区的内容
  * @param mode 排行榜类型
  * @param page 页码
- * @return [IllustResult]
+ * @return [List]
  * 
  */
-suspend fun PixivAccount.getRankIllust(mode: RankCategory, page: Int = 1): IllustResult {
+suspend fun PixivAccount.getRankIllust(mode: RankCategory, page: Int = 1): List<Illust> {
     return client.get("v1/illust/ranking") {
         parameter("filter", "for_android")
         parameter("mode", mode.content)
@@ -39,5 +40,5 @@ suspend fun PixivAccount.getRankIllust(mode: RankCategory, page: Int = 1): Illus
         parameter("offset", (page - 1) * 30)
 //        parameter("date", year + "-" + (monthOfYear + 1) + "-" + dayOfMonth)
 
-    }.body()
+    }.body<IllustResult>().illusts
 }

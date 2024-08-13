@@ -95,6 +95,12 @@ fun UserInfo.buildSettings(block: UserProfileSetting.() -> Unit): UserProfileSet
     return k
 }
 
+/**
+ * # 设置用户信息
+ * @param profile 用户设置
+ * @see [UserProfileSetting]
+ * @see buildSettings
+ */
 suspend fun PixivAccount.setUserProfile(profile: UserProfileSetting) {
     client.post("v1/user/profile/edit") {
         contentType(ContentType.MultiPart.FormData)

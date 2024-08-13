@@ -1,7 +1,10 @@
 import kotlinx.datetime.Instant
+import top.kagg886.pixko.module.novel.parser.createNovelData
+import top.kagg886.pixko.module.novel.parser.toOriginalString
 import top.kagg886.pixko.module.profile.CountryCode
 import top.kagg886.pixko.module.profile.JapanAddress
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class OtherTest {
     @Test
@@ -19,6 +22,51 @@ class OtherTest {
         check(address != JapanAddress.INTERNATIONAL && country == CountryCode.JAPAN)
 
         check(address == JapanAddress.INTERNATIONAL && country != CountryCode.JAPAN)
+    }
+
+    @Test
+    fun testNovelParserNoAnyElement() {
+        val novel = """
+            123456
+        """.trimIndent()
+        val data = createNovelData(str = novel)
+        assert(data.isNotEmpty())
+        data.forEach(::println)
+    }
+    @Test
+    fun testNovelParser() {
+        val novel = """
+              如你所见，该小说用于测试文本解析器性能
+              请前往[[jumpuri:https://github.com/kagg886/Pixko > https://github.com/kagg886/Pixko]]查看项目 1
+              [newpage] 2
+
+              [chapter:标题1] 3
+              上传图片[uploadedimage:18743458] 4
+              p站站内图片[pixivimage:121447499] 5
+              这是一个[[rb:注音 > zhu yin 1]]注音 6
+              我就使用这个的东西，而且没有转义[abcd]
+              ][
+              [abcd:1]
+              这是一个内部跳转[jump:3] 7
+
+
+              [newpage]
+              ——[chapter:标题1]页面2
+
+              [newpage]
+              页面3
+
+              [newpage]
+              页面4
+              [jump:1]
+              页面5
+        """.trimIndent()
+        val data = createNovelData(str = novel)
+
+        data.forEach(::println)
+        println(data.toOriginalString())
+
+        assertEquals(novel, data.toOriginalString())
     }
 
     @Test

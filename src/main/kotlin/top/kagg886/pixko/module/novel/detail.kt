@@ -1,4 +1,4 @@
-package top.kagg886.pixko.module.illust
+package top.kagg886.pixko.module.novel
 
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -9,14 +9,14 @@ import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.internal.json
 
 /**
- * # 获取插画详情
- * @param illustId 插画id
- * @return [Illust]
- * 
+ * # 获取小说详情
+ * @param novelId 小说id
+ * @return [Novel]
+ *
  */
-suspend fun PixivAccount.getIllustDetail(illustId: Long): Illust {
-    return client.get("https://app-api.pixiv.net/v1/illust/detail?illust_id=$illustId")
-        .body<JsonElement>().jsonObject["illust"]!!.jsonObject.let {
+suspend fun PixivAccount.getNovelDetail(novelId: Long): Novel {
+    return client.get("https://app-api.pixiv.net/v2/novel/detail?novel_id=$novelId")
+        .body<JsonElement>().jsonObject["novel"]!!.jsonObject.let {
         json.decodeFromJsonElement(it)
     }
 }

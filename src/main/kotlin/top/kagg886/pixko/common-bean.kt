@@ -4,6 +4,29 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
+ * # 代表一个最简单的用户信息
+ *
+ * @property id 用户id
+ * @property name 用户名
+ * @property account 用户账号
+ * @property profileImageUrls 用户头像链接
+ * @property isFollowed 是否关注了这个用户，某些接口不会返回这个值
+ * @property comment 用户个人签名，某些接口不会返回这个值
+ */
+@Serializable
+data class User(
+    val id: Int,
+    val name: String,
+    val account: String,
+    @SerialName("profile_image_urls")
+    val profileImageUrls: ImageUrls,
+
+    @SerialName("is_followed")
+    val isFollowed: Boolean? = null,
+    val comment: String? = null,
+)
+
+/**
  * # 标签
  * @property name 标签原始名称(与本国语言有关)
  * @property translatedName 标签翻译名称(与当前语言有关)

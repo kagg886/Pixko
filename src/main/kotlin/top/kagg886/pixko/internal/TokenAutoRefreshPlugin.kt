@@ -33,12 +33,13 @@ internal class TokenAutoRefreshPlugin(
                 context.headers["Authorization"] = "Bearer ${storage.getToken(TokenType.ACCESS)}"
             }
             scope.receivePipeline.intercept(HttpReceivePipeline.After) {
+                if (subject.status == HttpStatusCode.OK) {
+                    return@intercept
+                }
                 val subject = subject.call.save().response
-                proceedWith(subject)
                 val originBody = kotlin.runCatching {
                     subject.bodyAsText()
                 }.getOrElse { "" }
-
                 if (subject.status == HttpStatusCode.BadRequest) {
                     if (originBody.contains("Invalid access token") || originBody.contains("Error occurred at the OAuth process")) {
                         val body = kotlin.runCatching {
@@ -57,7 +58,10 @@ internal class TokenAutoRefreshPlugin(
                                 )
                             }
                             //对外隐藏auth/token请求。一般来说这个阶段抛出错误导致REFRESH_TOKEN丢失，需要重新登录。
-                        }.getOrNull() ?: throw PixivException(subject.call.request.url.toString(), originBody)
+                        }.getOrElse {
+                            it as PixivException
+                            throw PixivException(subject.call.request.url.toString(), it.body)
+                        }
 
                         val resp = body.body<JsonElement>().jsonObject
 
@@ -72,9 +76,7 @@ internal class TokenAutoRefreshPlugin(
                         return@intercept
                     }
                 }
-                if (subject.status != HttpStatusCode.OK) {
-                    throw PixivException(subject.call.request.url.toString(), originBody)
-                }
+                throw PixivException(subject.call.request.url.toString(), originBody)
             }
         }
     }

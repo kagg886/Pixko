@@ -8,16 +8,11 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.User
 import kotlin.properties.Delegates
 
-/**
- * # 评论相关
- *
- * @property comments 评论(包括回复)列表
- * @property nextUrl 下一页的url
- */
 @Serializable
-data class CommentListResult(
+private data class CommentListResult(
     @SerialName("comments")
     val comments: List<Comment>,
     @SerialName("next_url")
@@ -63,13 +58,13 @@ data class SuperFace(
  * @param page 页码，默认值为1
  * @return 评论列表
  *
- * 
+ *
  */
-suspend fun PixivAccount.getIllustComment(illustId: Long, page: Int = 1): CommentListResult {
+suspend fun PixivAccount.getIllustComment(illustId: Long, page: Int = 1): List<Comment> {
     return client.get("v3/illust/comments") {
         parameter("illust_id", illustId)
         parameter("offset", (page - 1) * 30)
-    }.body()
+    }.body<CommentListResult>().comments
 }
 
 /**
@@ -78,13 +73,13 @@ suspend fun PixivAccount.getIllustComment(illustId: Long, page: Int = 1): Commen
  * @param commentId 评论id
  * @param page 页码，默认值为1
  * @return 回复列表
- * 
+ *
  */
-suspend fun PixivAccount.getIllustCommentReply(commentId: Long, page: Int = 1): CommentListResult {
+suspend fun PixivAccount.getIllustCommentReply(commentId: Long, page: Int = 1): List<Comment> {
     return client.get("v2/illust/comment/replies") {
         parameter("comment_id", commentId)
         parameter("offset", (page - 1) * 30)
-    }.body()
+    }.body<CommentListResult>().comments
 }
 
 /**
@@ -105,8 +100,8 @@ class IllustComment {
  *
  * @param block 配置
  * @return 发送的评论配置
- * 
- * 
+ *
+ *
  */
 suspend fun PixivAccount.sendIllustComment(block: IllustComment.() -> Unit): Comment {
     @Serializable
@@ -135,7 +130,7 @@ suspend fun PixivAccount.sendIllustComment(block: IllustComment.() -> Unit): Com
  * # 删除评论
  *
  * @param commentId 评论id
- * 
+ *
  */
 suspend fun PixivAccount.deleteIllustComment(commentId: Long) {
     client.post("v1/illust/comment/delete") {

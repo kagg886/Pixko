@@ -6,7 +6,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import top.kagg886.pixko.PixivAccount
-import top.kagg886.pixko.module.illust.User
+import top.kagg886.pixko.User
 import top.kagg886.pixko.module.profile.CountryCode
 import top.kagg886.pixko.module.profile.JapanAddress
 import top.kagg886.pixko.module.profile.Job

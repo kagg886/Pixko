@@ -3,7 +3,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.*
-import top.kagg886.pixko.module.search.searchIllust
 import kotlin.test.Test
 
 class IllustTest {
@@ -12,15 +11,6 @@ class IllustTest {
         for (i in 1..3) {
             val next = client.getRecommendIllust()
             println(next)
-        }
-    }
-
-    @Test
-    fun testSearch(): Unit = runBlocking {
-        for (i in 1..3) {
-            client.searchIllust("原神").apply {
-                println(this.illusts)
-            }
         }
     }
 

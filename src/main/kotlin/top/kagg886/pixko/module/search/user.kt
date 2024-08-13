@@ -7,9 +7,8 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.User
 import top.kagg886.pixko.internal.json
-import top.kagg886.pixko.module.illust.User
-
 /**
  * # 搜索用户
  * @param keyword 关键词

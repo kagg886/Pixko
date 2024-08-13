@@ -4,6 +4,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.datetime.LocalDateTime
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.module.illust.Illust
 import top.kagg886.pixko.module.illust.IllustResult
 import top.kagg886.pixko.module.search.SearchSort.*
 import top.kagg886.pixko.module.search.SearchTarget.*
@@ -58,7 +59,7 @@ data class SearchConfig(
 suspend fun PixivAccount.searchIllust(
     word: String,
     block: SearchConfig.() -> Unit = {}
-): IllustResult {
+): List<Illust> {
     val (sort, searchTarget, startDate, endDate, page) = SearchConfig().apply(block)
     val body = client.get("v1/search/illust") {
         parameter("filter", "for_android")
@@ -74,5 +75,5 @@ suspend fun PixivAccount.searchIllust(
         }
         parameter("offset", (page - 1) * 30)
     }
-    return body.body()
+    return body.body<IllustResult>().illusts
 }

@@ -7,13 +7,9 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.29.0"
 }
 val release: String by project
+val appVersion: String by project
 group = "top.kagg886"
-version = "1.0"
-
-if (!release.toBoolean()) {
-    version = version.toString() + "-" + getGitSha()
-    println("Use debug mode, version is $version")
-}
+version = appVersion
 
 repositories {
     mavenCentral()
@@ -47,7 +43,7 @@ mavenPublishing {
             sourcesJar = true,
         )
     )
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral(SonatypeHost.S01)
     signAllPublications()
     coordinates(group.toString(), rootProject.name, version.toString())
     pom {
@@ -58,8 +54,8 @@ mavenPublishing {
         licenses {
             license {
                 name = "The Apache License, Version 2.0"
-                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         }
         developers {
@@ -81,10 +77,3 @@ fun getGitSha(): String {
     val out = Runtime.getRuntime().exec("git rev-parse --short HEAD").inputStream
     return out.readNBytes(7).decodeToString()
 }
-//String getGitSha() {
-//    InputStream out = Runtime.getRuntime().exec("git rev-parse --short HEAD").getInputStream()
-//    byte[] a = new byte[7]
-//    out.read(a)
-//    out.close()
-//    return new String(a)
-//}

@@ -15,7 +15,7 @@ import top.kagg886.pixko.internal.json
  * 
  */
 suspend fun PixivAccount.getIllustDetail(illustId: Long): Illust {
-    return client.get("https://app-api.pixiv.net/v1/illust/detail?illust_id=$illustId")
+    return client.get("v1/illust/detail?illust_id=$illustId")
         .body<JsonElement>().jsonObject["illust"]!!.jsonObject.let {
         json.decodeFromJsonElement(it)
     }

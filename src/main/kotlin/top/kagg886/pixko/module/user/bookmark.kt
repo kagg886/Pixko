@@ -49,7 +49,7 @@ suspend fun PixivAccount.getUserLikeIllustNext(result: IllustResult): IllustResu
  * @param restrict 公开性
  * @return [NovelResult] 用户收藏的小说
  */
-suspend fun PixivAccount.getUserLikeNovel(userId: Int, restrict: UserLikePublicity = PUBLIC):NovelResult {
+suspend fun PixivAccount.getUserLikeNovel(userId: Int, restrict: UserLikePublicity = PUBLIC): NovelResult {
     return client.get("v1/user/bookmarks/novel") {
         parameter("user_id", userId)
         parameter("restrict", restrict.name.lowercase())

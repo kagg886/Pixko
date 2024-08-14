@@ -15,7 +15,7 @@ import top.kagg886.pixko.internal.json
  *
  */
 suspend fun PixivAccount.getNovelDetail(novelId: Long): Novel {
-    return client.get("https://app-api.pixiv.net/v2/novel/detail?novel_id=$novelId")
+    return client.get("v2/novel/detail?novel_id=$novelId")
         .body<JsonElement>().jsonObject["novel"]!!.jsonObject.let {
         json.decodeFromJsonElement(it)
     }

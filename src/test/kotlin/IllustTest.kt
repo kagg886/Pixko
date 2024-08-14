@@ -6,6 +6,11 @@ import top.kagg886.pixko.module.illust.*
 import kotlin.test.Test
 
 class IllustTest {
+
+    @Test
+    fun testFollow():Unit = runBlocking {
+        println(client.getIllustFollowList())
+    }
     @Test
     fun testIllustRecommend(): Unit = runBlocking {
         for (i in 1..3) {

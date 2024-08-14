@@ -58,7 +58,7 @@ class PixivVerification(
      * @return 验证url
      */
     fun url(): String =
-        "https://app-api.pixiv.net/web/v1/login?code_challenge=$code_challenge&code_challenge_method=S256&client=pixiv-android"
+        "web/v1/login?code_challenge=$code_challenge&code_challenge_method=S256&client=pixiv-android"
 
     /**
      * # 提交验证

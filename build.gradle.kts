@@ -6,10 +6,11 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
     id("com.vanniktech.maven.publish") version "0.29.0"
 }
-val release: String by project
-val appVersion: String by project
+val snapshot: String by project
+val appVersion = "1.0"
+
 group = "top.kagg886"
-version = appVersion
+version = if (snapshot.toBoolean()) "$appVersion-SNAPSHOT" else appVersion
 
 repositories {
     mavenCentral()

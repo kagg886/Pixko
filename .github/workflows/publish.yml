@@ -3,7 +3,7 @@ name: Publish to Maven Central
 on:
   push:
     tags:
-      - '*.*'
+      - v*.*
     branches: [ "master" ]
 
 #jobs:

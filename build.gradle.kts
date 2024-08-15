@@ -9,9 +9,9 @@ plugins {
 
 group = "top.kagg886"
 val APP_VERSION: String by project
-version = APP_VERSION
+version = APP_VERSION.substring(1)
 
-println("APP_VERSION: $APP_VERSION")
+println("APP_VERSION: $version")
 
 repositories {
     mavenCentral()

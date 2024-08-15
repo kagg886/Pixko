@@ -16,7 +16,7 @@ jobs:
       - name: Set Tag
         id: set_tag
         run: |
-          appVersion = ${{ github.ref_name }}
+          set appVersion = ${{ github.ref_name }}
           echo "::set-tag-result is $appVersion"
 
       - name: Install JDK

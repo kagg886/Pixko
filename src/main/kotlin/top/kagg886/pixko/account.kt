@@ -46,17 +46,20 @@ class InMemoryTokenStorage : TokenStorage {
  * # Pixiv账号配置
  * @see PixivAccount
  * @property storage token存储器
- * @property logger 日志配置
+ * @property loggerLevel 日志配置
  * @property language 语言配置，置null则为日文。
  */
 class PixivAccountConfig {
-    data class LoggerProprieties(
+    enum class LoggerLevel(
         val level: LogLevel,
-        val logger: Logger
-    )
+    ) {
+        ALL(LogLevel.ALL),
+        INFO(LogLevel.INFO),
+        NONE(LogLevel.NONE)
+    }
 
     var storage: TokenStorage = InMemoryTokenStorage()
-    var logger: LoggerProprieties = LoggerProprieties(LogLevel.NONE, Logger.DEFAULT)
+    var loggerLevel: LoggerLevel = LoggerLevel.NONE
     var language: String? = "zh-CN"
 }
 
@@ -79,8 +82,8 @@ class PixivAccount internal constructor(private val config: PixivAccountConfig) 
         }
 
         install(Logging) {
-            logger = config.logger.logger
-            level = config.logger.level
+            logger = Logger.DEFAULT
+            level = config.loggerLevel.level
         }
 
         defaultRequest {

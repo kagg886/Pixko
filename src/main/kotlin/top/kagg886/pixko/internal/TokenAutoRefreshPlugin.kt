@@ -34,6 +34,7 @@ internal class TokenAutoRefreshPlugin(
             }
             scope.receivePipeline.intercept(HttpReceivePipeline.After) {
                 if (subject.status == HttpStatusCode.OK) {
+                    proceed()
                     return@intercept
                 }
                 val subject = subject.call.save().response

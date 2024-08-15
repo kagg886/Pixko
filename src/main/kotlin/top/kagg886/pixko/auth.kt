@@ -1,14 +1,19 @@
 package top.kagg886.pixko
 
+
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import top.kagg886.pixko.PixivAccountFactory.newAccount
+import top.kagg886.pixko.PixivAccountFactory.newAccountFromConfig
 
 //从APK中提取，不解释
 internal const val pixiv_client_id = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
@@ -29,14 +34,12 @@ object PixivAccountFactory {
     /**
      * # 创建一个Pixiv账号验证器
      * 该验证器会返回一个Pixiv验证器，请参考[PixivVerification]
-     * @see AuthTest.testNewAuth
      */
     fun newAccount(): PixivVerification = PixivVerification(code_challenge, code_verify)
 
     /**
      * # 直接创建一个Pixiv账号
      * 该验证器**不会**验证您的数据准确性
-     * @see AuthTest.testFailAccessTokenGen
      */
     fun newAccountFromConfig(block: PixivAccountConfig.() -> Unit = {}): PixivAccount {
         val config = PixivAccountConfig().apply(block)
@@ -72,7 +75,11 @@ class PixivVerification(
         val code = Url(url).parameters["code"]
         checkNotNull(code)
 
-        HttpClient().use { client ->
+        HttpClient {
+            install(ContentNegotiation) {
+                json(top.kagg886.pixko.internal.json)
+            }
+        }.use { client ->
             val resp = client.post("https://oauth.secure.pixiv.net/auth/token") {
                 contentType(ContentType.Application.FormUrlEncoded)
                 setBody(

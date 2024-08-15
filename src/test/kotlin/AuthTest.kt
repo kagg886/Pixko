@@ -1,5 +1,3 @@
-
-import io.ktor.client.plugins.logging.*
 import kotlinx.coroutines.runBlocking
 import top.kagg886.pixko.*
 import top.kagg886.pixko.module.illust.getRecommendIllust
@@ -12,7 +10,7 @@ class AuthTest {
 
         println(auth.url())
 
-        println(auth.verify(readln()))
+        println(auth.verify("pixiv://account/login?code=1P6cBiQvbiGYz0MXslyQ3LdJS0lMkZNXyoCip3U462Q&via=login"))
     }
 
     @Test
@@ -23,13 +21,7 @@ class AuthTest {
                 setToken(TokenType.REFRESH, "qwq")
             }
 
-            logger = PixivAccountConfig.LoggerProprieties(
-                LogLevel.BODY, object : Logger {
-                    override fun log(message: String) {
-                        println(message)
-                    }
-                }
-            )
+            loggerLevel = PixivAccountConfig.LoggerLevel.ALL
         }
         val t = kotlin.runCatching {
             client.getRecommendIllust()
@@ -45,13 +37,7 @@ class AuthTest {
                     setToken(TokenType.REFRESH, "xtkew_VEEQOxOW2xUeNE_Y8cX1g--Fhw9CtBAC6BVPQ")
                 }
 
-                logger = PixivAccountConfig.LoggerProprieties(
-                    LogLevel.ALL, object : Logger {
-                        override fun log(message: String) {
-                            println(message)
-                        }
-                    }
-                )
+                loggerLevel = PixivAccountConfig.LoggerLevel.ALL
             }
     }
 

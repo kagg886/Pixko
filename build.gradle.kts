@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "top.kagg886"
-val APP_VERSION = System.getProperty("APP_VERSION") ?: project.findProperty("APP_VERSION") as? String ?: ""
+val APP_VERSION = System.getenv("APP_VERSION") ?: project.findProperty("APP_VERSION") as? String ?: ""
 check(APP_VERSION.startsWith("v")) {
     "APP_VERSION not supported, current is $APP_VERSION"
 }

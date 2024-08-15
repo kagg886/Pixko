@@ -9,6 +9,9 @@ plugins {
 
 group = "top.kagg886"
 val APP_VERSION: String by project
+check(APP_VERSION.startsWith("v")) {
+    "APP_VERSION not supported, current is $APP_VERSION"
+}
 version = APP_VERSION.substring(1)
 
 println("APP_VERSION: $version")

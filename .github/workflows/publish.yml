@@ -6,19 +6,26 @@ on:
       - '*.*'
     branches: [ "master" ]
 
+#jobs:
+#  set-tag-name:
+#    runs-on: ubuntu-latest
+#    env:
+#      TAG_NAME: ${{ github.ref_name }}
+#
+#    steps:
+#      - name: Display Tag Name
+#        run |
+#        echo "The tag name is $TAG_NAME"
+
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      APP_VERSION: ${{ github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set Tag
-        id: set_tag
-        run: |
-          set appVersion = ${{ github.ref_name }}
-          echo "::set-tag-result is $appVersion"
-
       - name: Install JDK
         uses: actions/setup-java@v4
         with:

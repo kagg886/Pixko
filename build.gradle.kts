@@ -8,8 +8,10 @@ plugins {
 }
 
 group = "top.kagg886"
-val appVersion: String by project
-version = appVersion
+val APP_VERSION: String by project
+version = APP_VERSION
+
+println("APP_VERSION: $APP_VERSION")
 
 repositories {
     mavenCentral()

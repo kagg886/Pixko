@@ -51,7 +51,7 @@ suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.(
  * 
  */
 suspend fun PixivAccount.deleteBookmarkIllust(illustId: Long): Boolean {
-    val resp = client.post("v2/illust/bookmark/delete") {
+    val resp = client.post("v1/illust/bookmark/delete") {
         contentType(ContentType.Application.FormUrlEncoded)
         setBody(
             FormDataContent(

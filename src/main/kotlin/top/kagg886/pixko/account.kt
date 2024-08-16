@@ -86,6 +86,8 @@ class PixivAccount internal constructor(private val config: PixivAccountConfig) 
             level = config.loggerLevel.level
         }
 
+        install(HttpTimeout)
+
         defaultRequest {
             url("https://app-api.pixiv.net/")
             header("Accept-Language", config.language)

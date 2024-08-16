@@ -3,9 +3,17 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.*
+import top.kagg886.pixko.module.loadImage
 import kotlin.test.Test
 
 class IllustTest {
+
+    @Test
+    fun testLoadImage():Unit = runBlocking {
+        val stream = client.loadImage("https://i.pximg.net/c/540x540_70/img-master/img/2024/08/10/16/13/07/121356207_p0_master1200.jpg")
+
+        println(stream.size)
+    }
 
     @Test
     fun testFollow():Unit = runBlocking {

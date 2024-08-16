@@ -23,7 +23,9 @@ class IllustTest {
     fun testIllustRecommend(): Unit = runBlocking {
         for (i in 1..3) {
             val next = client.getRecommendIllust()
-            println(next)
+            for (j in next.illusts) {
+                println(j)
+            }
         }
     }
 

@@ -32,6 +32,12 @@ data class NovelResult(
     val novels: List<Novel>
 )
 
+@Serializable
+data class ImageUrlsWrapper(
+    @SerialName("image_urls")
+    val imageUrls: ImageUrls,
+)
+
 /**
  * # 代表了一个插画
  *
@@ -46,6 +52,7 @@ data class NovelResult(
  * @property width 插画宽度
  * @property height 插画高度
  * @property sanityLevel 插画Sanity等级，不建议使用。建议使用[isR18]
+ * @property _metaPages 多页插画的每页地址，不建议使用。建议使用[metaPages]
  * @property xRestrict 未知，与r18有关
  * @property totalView 插画总浏览量
  * @property totalBookmarks 插画总收藏数
@@ -58,6 +65,8 @@ data class Illust(
     val title: String,
     @SerialName("image_urls")
     val imageUrls: ImageUrls,
+    @SerialName("meta_pages")
+    internal val _metaPages:List<ImageUrlsWrapper>,
     //html encoded
     val caption: String,
 
@@ -96,5 +105,9 @@ data class Illust(
      * 是否为AI
      */
     val isAI: Boolean = illustAiType == 2
+
+    val metaPages by lazy {
+        _metaPages.map { it.imageUrls }
+    }
 }
 

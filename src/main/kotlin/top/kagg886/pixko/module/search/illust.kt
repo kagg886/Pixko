@@ -8,6 +8,7 @@ import top.kagg886.pixko.module.illust.Illust
 import top.kagg886.pixko.module.illust.IllustResult
 import top.kagg886.pixko.module.search.SearchSort.*
 import top.kagg886.pixko.module.search.SearchTarget.*
+import top.kagg886.pixko.module.user.getCurrentUserSimpleProfile
 
 /**
  * 搜索结果
@@ -54,13 +55,32 @@ data class SearchConfig(
  * @param word 搜索关键词
  * @param block 搜索配置
  * @return [IllustResult] 搜索结果
- * 
  */
 suspend fun PixivAccount.searchIllust(
     word: String,
     block: SearchConfig.() -> Unit = {}
 ): List<Illust> {
     val (sort, searchTarget, startDate, endDate, page) = SearchConfig().apply(block)
+    val userInfo = getCurrentUserSimpleProfile()
+    if (!userInfo.isPremium && sort == POPULAR_DESC) {
+        if (page != 1) {
+            return emptyList()
+        }
+        return client.get("v1/search/popular-preview/illust") {
+            parameter("filter", "for_android")
+            parameter("include_translated_tag_results", true)
+            parameter("merge_plain_keyword_results", true)
+            parameter("word", word)
+            parameter("search_target", searchTarget.name.lowercase())
+            if (startDate != null) {
+                parameter("start_date", startDate.toString())
+            }
+            if (endDate != null) {
+                parameter("end_date", endDate.toString())
+            }
+        }.body<IllustResult>().illusts
+
+    }
     val body = client.get("v1/search/illust") {
         parameter("filter", "for_android")
         parameter("include_translated_tag_results", true)

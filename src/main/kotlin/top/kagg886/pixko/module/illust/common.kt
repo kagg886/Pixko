@@ -16,7 +16,7 @@ import top.kagg886.pixko.module.novel.Novel
 @Serializable
 data class IllustResult(
     @SerialName("next_url")
-    val nextUrl: String?,
+    val nextUrl: String? = null,
     val illusts: List<Illust>
 )
 

@@ -54,6 +54,11 @@ class IllustTest {
         client.deleteBookmarkIllust(85297928)
     }
 
+    @Test
+    fun testLatestIllust():Unit = runBlocking {
+        client.getLatestIllust()
+    }
+
     companion object {
         lateinit var client: PixivAccount
 

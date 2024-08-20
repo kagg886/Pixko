@@ -44,8 +44,19 @@ class IllustTest {
 
     @Test
     fun testIllustDetail(): Unit = runBlocking {
-        val k = client.getIllustDetail(85297928)
-        println(k)
+        //120131445 一张图片
+        //120585273 三张图片
+        while (true) {
+            try {
+                val a = client.getIllustDetail(120131445)
+                println(a)
+                println(a.contentImages)
+                println(a.originImages)
+            } catch (e: Exception) {
+                continue
+            }
+            break
+        }
     }
 
     @Test

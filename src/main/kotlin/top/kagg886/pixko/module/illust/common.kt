@@ -3,6 +3,9 @@ package top.kagg886.pixko.module.illust
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import top.kagg886.pixko.ImageUrls
 import top.kagg886.pixko.Tag
 import top.kagg886.pixko.User
@@ -57,16 +60,13 @@ data class ImageUrlsWrapper(
  * @property totalView 插画总浏览量
  * @property totalBookmarks 插画总收藏数
  * @property isBookMarked 是否收藏
- * @property illustAiType AI-tag标记，不建议使用。建议使用[isAi]
+ * @property illustAiType AI-tag标记，不建议使用。建议使用[isAI]
+ * @property singlePageMeta 单页原画数据，不建议使用。建议使用[singlePageMeta]
  */
 @Serializable
 data class Illust(
     val id: Int,
     val title: String,
-    @SerialName("image_urls")
-    val imageUrls: ImageUrls,
-    @SerialName("meta_pages")
-    internal val _metaPages:List<ImageUrlsWrapper>,
     //html encoded
     val caption: String,
 
@@ -95,6 +95,13 @@ data class Illust(
 
     @SerialName("illust_ai_type")
     internal val illustAiType: Int,
+
+    @SerialName("image_urls")
+    val imageUrls: ImageUrls,
+    @SerialName("meta_pages")
+    internal val _metaPages: List<ImageUrlsWrapper>, //多页漫画详情接口包含origin
+    @SerialName("meta_single_page")
+    internal val singlePageMeta: JsonElement? = null, //单页漫画详情接口包含origin
 ) {
     /**
      * 是否为R18
@@ -106,8 +113,27 @@ data class Illust(
      */
     val isAI: Boolean = illustAiType == 2
 
+    @Deprecated("please use contentImages")
     val metaPages by lazy {
         _metaPages.map { it.imageUrls }
     }
-}
 
+    val contentImages: List<String>? by lazy {
+        if (pageCount > 1) {
+            return@lazy _metaPages.map { it.imageUrls.content }
+        }
+        return@lazy listOf(imageUrls.content)
+    }
+
+    /**
+     * 获取原图，当信息未包含原图时返回null
+     */
+    val originImages: List<String>? by lazy {
+        if (pageCount > 1) {
+            return@lazy _metaPages.mapNotNull { it.imageUrls.original }.toList().ifEmpty { null }
+        }
+        singlePageMeta?.let {
+            listOf(it.jsonObject["original_image_url"]!!.jsonPrimitive.content)
+        }
+    }
+}

@@ -61,6 +61,7 @@ data class Tag(
  * @property squareMedium 宽高为 240x240 的图片链接
  * @property medium 宽高为 480x480 的图片链接
  * @property large 宽高为 1200x1200 的图片链接
+ * @property original 原画链接
  * @see content
  */
 @Serializable
@@ -68,7 +69,8 @@ data class ImageUrls(
     @SerialName("square_medium")
     val squareMedium: String? = null,
     val medium: String? = null,
-    val large: String? = null
+    val large: String? = null,
+    val original:String? = null,
 ) {
     val content
         get() = arrayOf(medium, squareMedium, large).firstNotNullOf { it }

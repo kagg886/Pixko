@@ -27,6 +27,12 @@ class UserTest {
     }
 
     @Test
+    fun testUserIllusts():Unit = runBlocking {
+        val state = client.getUserIllust(13379747)
+        println(state)
+    }
+
+    @Test
     fun testUserDetail(): Unit = runBlocking {
         val state = client.getUserInfo(38000473)
         println(state)

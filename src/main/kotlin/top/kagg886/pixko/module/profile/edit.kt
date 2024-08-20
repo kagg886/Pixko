@@ -3,7 +3,7 @@ package top.kagg886.pixko.module.profile
 /**
  * # 地址字段序列化结果
  */
-enum class JapanAddress(private val display: String, val code: Int) {
+enum class JapanAddress(val display: String, val code: Int) {
     UN_SETTING("未设置", 0),
     HOKKAIDO("北海道", 1),
     AOMORI("青森县", 2),
@@ -66,7 +66,7 @@ enum class JapanAddress(private val display: String, val code: Int) {
  * @property display 显示名称
  * @property code 国家代码
  */
-enum class CountryCode(private val display: String, val code: String) {
+enum class CountryCode(val display: String, val code: String) {
     UN_SETTING("未设置", ""),
     JAPAN("日本", ""),
     ICELAND("冰岛", "IS"),
@@ -328,7 +328,7 @@ enum class CountryCode(private val display: String, val code: String) {
     }
 }
 
-enum class Job(val code: Int, private val display: String) {
+enum class Job(val code: Int, val display: String) {
     UN_SETTING(0, "未设置"),
     IT_ASSOCIATED(1, "IT关联"),
     AFFAIRS_ASSOCIATED(2, "事务关联"),

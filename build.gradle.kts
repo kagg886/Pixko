@@ -32,6 +32,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 
     testImplementation(kotlin("test"))
+
+    testImplementation("org.slf4j:slf4j-api:2.0.16")
+    testImplementation("ch.qos.logback:logback-classic:1.5.6")
 }
 
 tasks.test {

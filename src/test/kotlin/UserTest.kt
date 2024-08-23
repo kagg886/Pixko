@@ -100,6 +100,20 @@ class UserTest {
         }
     }
 
+    @Test
+    fun testUserUnFollow():Unit = runBlocking {
+        client.unFollowUser(13379747)
+    }
+
+    @Test
+    fun testUserFollow():Unit = runBlocking {
+        client.followUser(13379747)
+    }
+    @Test
+    fun testUserFollowList():Unit = runBlocking {
+        println(client.getFollowingList(13379747))
+    }
+
     companion object {
         lateinit var client: PixivAccount
 

@@ -5,7 +5,7 @@ Pixco是一个适用于pixiv-android的库
 ## 引入
 
 ```kotlin
-implementation("top.kagg886:pixko:1.0-38de390")
+implementation("top.kagg886:pixko:${pixiv_version}")
 ```
 
 ## 功能

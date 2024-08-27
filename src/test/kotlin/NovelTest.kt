@@ -20,7 +20,9 @@ class NovelTest {
     @Test
     fun testRecommendNovel(): Unit = runBlocking {
         val novel = client.getRecommendNovel()
+        val novel1 = client.getRecommendNovelNext(novel)
         println(novel)
+        println(novel1)
     }
 
     @Test

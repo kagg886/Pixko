@@ -88,7 +88,7 @@ data class NovelData(
     val _images: JsonElement
 ) {
     val images by lazy {
-        check(_images !is JsonObject) {
+        check(_images is JsonObject) {
             "image is empty"
         }
         json.decodeFromJsonElement<Map<String, NovelImages>>(_images.jsonObject)

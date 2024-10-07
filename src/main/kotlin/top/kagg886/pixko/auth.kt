@@ -60,8 +60,17 @@ class PixivVerification(
      * 验证的url需要在浏览器打开
      * @return 验证url
      */
+    @Deprecated("please use the url property)")
     fun url(): String =
         "web/v1/login?code_challenge=$code_challenge&code_challenge_method=S256&client=pixiv-android"
+
+    /**
+     * # 获取Pixiv验证url
+     * 验证的url需要在浏览器打开
+     * @return 验证url
+     */
+    val url: String =
+        "https://app-api.pixiv.net/web/v1/login?code_challenge=$code_challenge&code_challenge_method=S256&client=pixiv-android"
 
     /**
      * # 提交验证

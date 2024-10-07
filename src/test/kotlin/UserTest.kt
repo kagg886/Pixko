@@ -28,7 +28,7 @@ class UserTest {
 
     @Test
     fun testUserIllusts():Unit = runBlocking {
-        val state = client.getUserIllust(13379747)
+        val state = client.getUserIllust(20235288)
         println(state)
     }
 

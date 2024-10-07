@@ -136,4 +136,20 @@ data class Illust(
             listOf(it.jsonObject["original_image_url"]!!.jsonPrimitive.content)
         }
     }
+
+    val limitLevel: LimitLevel by lazy {
+        when (imageUrls.content) {
+            "https://s.pximg.net/common/images/limit_r18_360.png" -> LimitLevel.LIMIT_R18
+            "https://s.pximg.net/common/images/limit_sanity_level_360.png" -> LimitLevel.LIMIT_PRIVACY
+            else -> LimitLevel.NONE
+        }
+    }
+
+    val isLimited: Boolean by lazy {
+        limitLevel != LimitLevel.NONE
+    }
+
+    enum class LimitLevel {
+        NONE, LIMIT_R18, LIMIT_PRIVACY
+    }
 }

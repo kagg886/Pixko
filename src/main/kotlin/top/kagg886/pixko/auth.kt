@@ -3,6 +3,7 @@ package top.kagg886.pixko
 
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -84,9 +85,16 @@ class PixivVerification(
         val code = Url(url).parameters["code"]
         checkNotNull(code)
 
-        HttpClient {
-            install(ContentNegotiation) {
+        val config = PixivAccountConfig().apply(block)
+
+        HttpClient(OkHttp) {
+            install (ContentNegotiation) {
                 json(top.kagg886.pixko.internal.json)
+            }
+            engine {
+                config {
+                    dns(config.dns)
+                }
             }
         }.use { client ->
             val resp = client.post("https://oauth.secure.pixiv.net/auth/token") {
@@ -125,7 +133,6 @@ class PixivVerification(
             val refreshToken =
                 json["refresh_token"]?.jsonPrimitive?.content ?: throw IllegalArgumentException("refresh_token is null")
 
-            val config = PixivAccountConfig().apply(block)
             config.storage.setToken(TokenType.ACCESS, accessToken)
             config.storage.setToken(TokenType.REFRESH, refreshToken)
 

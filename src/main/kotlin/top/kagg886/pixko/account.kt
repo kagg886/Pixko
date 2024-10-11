@@ -1,12 +1,13 @@
 package top.kagg886.pixko
 
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
+import okhttp3.Dns
 import top.kagg886.pixko.TokenType.ACCESS
 import top.kagg886.pixko.TokenType.REFRESH
 import top.kagg886.pixko.internal.TokenAutoRefreshPlugin
@@ -58,6 +59,7 @@ class PixivAccountConfig {
         NONE(LogLevel.NONE)
     }
 
+    var dns: Dns = Dns.SYSTEM
     var storage: TokenStorage = InMemoryTokenStorage()
     var loggerLevel: LoggerLevel = LoggerLevel.NONE
     var language: String? = "zh-CN"
@@ -72,7 +74,12 @@ class PixivAccountConfig {
 class PixivAccount internal constructor(private val config: PixivAccountConfig) :
     AutoCloseable {
 
-    internal val client = HttpClient(CIO) {
+    internal val client = HttpClient(OkHttp) {
+        engine {
+            config {
+                dns(config.dns)
+            }
+        }
         install(ContentNegotiation) {
             json(top.kagg886.pixko.internal.json)
         }

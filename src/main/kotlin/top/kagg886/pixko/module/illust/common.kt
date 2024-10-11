@@ -10,6 +10,7 @@ import top.kagg886.pixko.ImageUrls
 import top.kagg886.pixko.Tag
 import top.kagg886.pixko.User
 import top.kagg886.pixko.module.novel.Novel
+import kotlin.reflect.KProperty1
 
 /**
  * # 插画包装列表
@@ -18,9 +19,7 @@ import top.kagg886.pixko.module.novel.Novel
  */
 @Serializable
 data class IllustResult(
-    @SerialName("next_url")
-    val nextUrl: String? = null,
-    val illusts: List<Illust>
+    @SerialName("next_url") val nextUrl: String? = null, val illusts: List<Illust>
 )
 
 /**
@@ -30,15 +29,12 @@ data class IllustResult(
  */
 @Serializable
 data class NovelResult(
-    @SerialName("next_url")
-    val nextUrl: String?,
-    val novels: List<Novel>
+    @SerialName("next_url") val nextUrl: String?, val novels: List<Novel>
 )
 
 @Serializable
 data class ImageUrlsWrapper(
-    @SerialName("image_urls")
-    val imageUrls: ImageUrls,
+    @SerialName("image_urls") val imageUrls: ImageUrls,
 )
 
 /**
@@ -72,36 +68,25 @@ data class Illust(
 
     val user: User,
     val tags: List<Tag>,
-    @SerialName("create_date")
-    val createTime: Instant,
+    @SerialName("create_date") val createTime: Instant,
 
-    @SerialName("page_count")
-    val pageCount: Int,
+    @SerialName("page_count") val pageCount: Int,
     val width: Int,
     val height: Int,
 
-    @SerialName("sanity_level")
-    internal val sanityLevel: Int,
+    @SerialName("sanity_level") internal val sanityLevel: Int,
 
-    @SerialName("x_restrict")
-    internal val xRestrict: Int,
+    @SerialName("x_restrict") internal val xRestrict: Int,
 
-    @SerialName("total_view")
-    val totalView: Int,
-    @SerialName("total_bookmarks")
-    val totalBookmarks: Int,
-    @SerialName("is_bookmarked")
-    val isBookMarked: Boolean,
+    @SerialName("total_view") val totalView: Int,
+    @SerialName("total_bookmarks") val totalBookmarks: Int,
+    @SerialName("is_bookmarked") val isBookMarked: Boolean,
 
-    @SerialName("illust_ai_type")
-    internal val illustAiType: Int,
+    @SerialName("illust_ai_type") internal val illustAiType: Int,
 
-    @SerialName("image_urls")
-    val imageUrls: ImageUrls,
-    @SerialName("meta_pages")
-    internal val _metaPages: List<ImageUrlsWrapper>, //多页漫画详情接口包含origin
-    @SerialName("meta_single_page")
-    internal val singlePageMeta: JsonElement? = null, //单页漫画详情接口包含origin
+    @SerialName("image_urls") val imageUrls: ImageUrls,
+    @SerialName("meta_pages") internal val _metaPages: List<ImageUrlsWrapper>, //多页漫画详情接口包含origin
+    @SerialName("meta_single_page") internal val singlePageMeta: JsonElement? = null, //单页漫画详情接口包含origin
 ) {
     /**
      * 是否为R18
@@ -113,21 +98,19 @@ data class Illust(
      */
     val isAI: Boolean = illustAiType == 2
 
-    @Deprecated("please use contentImages")
-    val metaPages by lazy {
-        _metaPages.map { it.imageUrls }
-    }
 
-    val contentImages: List<String>? by lazy {
+    @Deprecated("please use List<ImageUrls>.get(IllustImagesType.MEDIUM)")
+    val contentImages: List<ImageUrls>? by lazy {
         if (pageCount > 1) {
-            return@lazy _metaPages.map { it.imageUrls.content }
+            return@lazy _metaPages.map { it.imageUrls }
         }
-        return@lazy listOf(imageUrls.content)
+        return@lazy listOf(imageUrls)
     }
 
     /**
      * 获取原图，当信息未包含原图时返回null
      */
+    @Deprecated("please use List<ImageUrls>.get(IllustImagesType.ORIGIN)")
     val originImages: List<String>? by lazy {
         if (pageCount > 1) {
             return@lazy _metaPages.mapNotNull { it.imageUrls.original }.toList().ifEmpty { null }
@@ -151,9 +134,31 @@ data class Illust(
     }
 
     enum class LimitLevel {
-        NONE,
-        LIMIT_R15,
-        LIMIT_R18,
-        LIMIT_PRIVACY
+        NONE, LIMIT_R15, LIMIT_R18, LIMIT_PRIVACY
     }
+}
+
+//@SerialName("square_medium")
+//    val squareMedium: String? = null,
+//    val medium: String? = null,
+//    val large: String? = null,
+//    val original: String? = null,
+enum class IllustImagesType(internal val data: KProperty1<ImageUrls, String?>) {
+    SQUARE(ImageUrls::squareMedium),
+    MEDIUM(ImageUrls::medium),
+    LARGE(ImageUrls::large),
+    ORIGIN(ImageUrls::original),
+}
+
+operator fun List<ImageUrls>.get(
+    vararg type: IllustImagesType = arrayOf(
+        IllustImagesType.MEDIUM,
+        IllustImagesType.LARGE,
+        IllustImagesType.SQUARE,
+        IllustImagesType.ORIGIN
+    )
+): List<String>? {
+    return mapNotNull { data ->
+        type.toList().firstNotNullOf { it.data.get(data) }
+    }.ifEmpty { null }
 }

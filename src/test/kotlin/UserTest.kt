@@ -114,6 +114,11 @@ class UserTest {
         println(client.getFollowingList(13379747))
     }
 
+    @Test
+    fun testUserNovel():Unit = runBlocking {
+        println(client.getUserNovel(22919310))
+    }
+
     companion object {
         lateinit var client: PixivAccount
 

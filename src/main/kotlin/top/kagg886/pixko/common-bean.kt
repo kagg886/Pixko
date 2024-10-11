@@ -70,8 +70,11 @@ data class ImageUrls(
     val squareMedium: String? = null,
     val medium: String? = null,
     val large: String? = null,
-    val original:String? = null,
+    val original: String? = null,
 ) {
     val content
         get() = arrayOf(medium, squareMedium, large).firstNotNullOf { it }
+
+    val contentLarge
+        get() = arrayOf(large, medium, squareMedium).firstNotNullOf { it }
 }

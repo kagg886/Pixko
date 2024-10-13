@@ -102,12 +102,17 @@ data class Illust(
         if (pageCount > 1) {
             return@lazy _metaPages.map { it.imageUrls }
         }
-        return@lazy listOf(imageUrls)
+        return@lazy listOf(
+            imageUrls.copy(
+                original = singlePageMeta?.jsonObject?.get("original_image_url")?.jsonPrimitive?.content
+            )
+        )
     }
 
     /**
      * 获取原图，当信息未包含原图时返回null
      */
+    @Deprecated("please use List<ImageUrls>.get(IllustImagesType.ORIGIN)")
     val originImages: List<String>? by lazy {
         if (pageCount > 1) {
             return@lazy _metaPages.mapNotNull { it.imageUrls.original }.toList().ifEmpty { null }
@@ -144,6 +149,7 @@ enum class IllustImagesType(internal val data: KProperty1<ImageUrls, String?>) {
     SQUARE(ImageUrls::squareMedium),
     MEDIUM(ImageUrls::medium),
     LARGE(ImageUrls::large),
+    ORIGIN(ImageUrls::original),
 }
 
 operator fun List<ImageUrls>.get(
@@ -151,6 +157,7 @@ operator fun List<ImageUrls>.get(
         IllustImagesType.MEDIUM,
         IllustImagesType.LARGE,
         IllustImagesType.SQUARE,
+        IllustImagesType.ORIGIN
     )
 ): List<String>? {
     return mapNotNull { data ->

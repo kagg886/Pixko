@@ -50,7 +50,7 @@ class IllustTest {
             try {
                 val a = client.getIllustDetail(106340654)
                 println(a)
-                println(a.contentImages)
+                println(a.contentImages.get(IllustImagesType.ORIGIN))
             } catch (e: Exception) {
                 continue
             }

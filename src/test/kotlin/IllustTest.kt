@@ -48,10 +48,9 @@ class IllustTest {
         //120585273 三张图片
         while (true) {
             try {
-                val a = client.getIllustDetail(120131445)
+                val a = client.getIllustDetail(123098496)
                 println(a)
-                println(a.contentImages)
-                println(a.originImages)
+                println(a.contentImages[IllustImagesType.MEDIUM])
             } catch (e: Exception) {
                 continue
             }

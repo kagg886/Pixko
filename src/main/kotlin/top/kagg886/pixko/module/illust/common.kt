@@ -98,9 +98,7 @@ data class Illust(
      */
     val isAI: Boolean = illustAiType == 2
 
-
-    @Deprecated("please use List<ImageUrls>.get(IllustImagesType.MEDIUM)")
-    val contentImages: List<ImageUrls>? by lazy {
+    val contentImages: List<ImageUrls> by lazy {
         if (pageCount > 1) {
             return@lazy _metaPages.map { it.imageUrls }
         }
@@ -159,6 +157,6 @@ operator fun List<ImageUrls>.get(
     )
 ): List<String>? {
     return mapNotNull { data ->
-        type.toList().firstNotNullOf { it.data.get(data) }
+        type.toList().firstNotNullOfOrNull { it.data.get(data) }
     }.ifEmpty { null }
 }

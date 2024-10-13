@@ -93,7 +93,7 @@ class PixivVerification(
             }
             engine {
                 config {
-                    dns(config.dns)
+                    config.engine(this)
                 }
             }
         }.use { client ->

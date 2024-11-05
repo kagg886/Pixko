@@ -29,7 +29,7 @@ data class IllustResult(
  */
 @Serializable
 data class NovelResult(
-    @SerialName("next_url") val nextUrl: String?, val novels: List<Novel>
+    @SerialName("next_url") val nextUrl: String? = null, val novels: List<Novel>
 )
 
 @Serializable

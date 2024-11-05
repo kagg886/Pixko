@@ -8,9 +8,9 @@ class AuthTest {
     fun testNewAuth(): Unit = runBlocking {
         val auth = PixivAccountFactory.newAccount()
 
-        println(auth.url())
+        println(auth.url)
 
-        println(auth.verify("pixiv://account/login?code=1P6cBiQvbiGYz0MXslyQ3LdJS0lMkZNXyoCip3U462Q&via=login"))
+//        println(auth.verify("pixiv://account/login?code=1P6cBiQvbiGYz0MXslyQ3LdJS0lMkZNXyoCip3U462Q&via=login"))
     }
 
     @Test

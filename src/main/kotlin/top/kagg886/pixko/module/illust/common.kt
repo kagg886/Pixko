@@ -94,6 +94,11 @@ data class Illust(
     val isR18: Boolean = xRestrict == 1 || sanityLevel >= 4
 
     /**
+     * 是否为R18G
+     */
+    val isR18G: Boolean = xRestrict == 2 || sanityLevel >= 6
+
+    /**
      * 是否为AI
      */
     val isAI: Boolean = illustAiType == 2
@@ -122,21 +127,36 @@ data class Illust(
         }
     }
 
+    /**
+     * 插画若被限制，可调用此字段获取限制原因
+     */
     val limitLevel: LimitLevel by lazy {
         when (imageUrls.content) {
             "https://s.pximg.net/common/images/limit_r18_360.png" -> LimitLevel.LIMIT_R18
+            "https://s.pximg.net/common/images/limit_r18g_360.png" -> LimitLevel.LIMIT_R18G
             "https://s.pximg.net/common/images/limit_sanity_level_360.png" -> LimitLevel.LIMIT_R15
             "https://s.pximg.net/common/images/limit_unknown_360.png" -> LimitLevel.LIMIT_PRIVACY
             else -> LimitLevel.NONE
         }
     }
 
+    /**
+     * 插画的访问是否被限制。
+     */
     val isLimited: Boolean by lazy {
         limitLevel != LimitLevel.NONE
     }
 
+    /**
+     * # 代表插画访问被限制的原因
+     * @property NONE 未被限制
+     * @property LIMIT_R15 该限制较为广泛。如暴露图片和简介含商单链接(后者无法通过常规途径解除)
+     * @property LIMIT_R18 R18插画
+     * @property LIMIT_R18G R18G插画
+     * @property LIMIT_PRIVACY 无权限访问插画
+     */
     enum class LimitLevel {
-        NONE, LIMIT_R15, LIMIT_R18, LIMIT_PRIVACY
+        NONE, LIMIT_R15, LIMIT_R18, LIMIT_R18G, LIMIT_PRIVACY
     }
 }
 

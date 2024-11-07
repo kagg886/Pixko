@@ -9,6 +9,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import top.kagg886.pixko.ImageUrls
 import top.kagg886.pixko.Tag
 import top.kagg886.pixko.User
+import top.kagg886.pixko.module.illust.Illust.LimitLevel.*
 import top.kagg886.pixko.module.novel.Novel
 import kotlin.reflect.KProperty1
 
@@ -88,15 +89,17 @@ data class Illust(
     @SerialName("meta_pages") internal val _metaPages: List<ImageUrlsWrapper>, //多页漫画详情接口包含origin
     @SerialName("meta_single_page") internal val singlePageMeta: JsonElement? = null, //单页漫画详情接口包含origin
 ) {
-    /**
-     * 是否为R18
-     */
-    val isR18: Boolean = xRestrict == 1 || sanityLevel >= 4
 
     /**
      * 是否为R18G
      */
-    val isR18G: Boolean = xRestrict == 2 || sanityLevel >= 6
+    val isR18G: Boolean = xRestrict == 2 && sanityLevel >= 6
+
+    /**
+     * 是否为R18
+     */
+    val isR18: Boolean = isR18G || xRestrict == 1 && sanityLevel >= 4
+
 
     /**
      * 是否为AI

@@ -24,6 +24,15 @@ class IllustTest {
     }
 
     @Test
+    fun testR18GFilter():Unit = runBlocking {
+        listOf(
+            client.getIllustDetail(122433765)
+        ). apply {
+            println(this.joinToString("\n\n\n") { it.toString() })
+        }
+    }
+
+    @Test
     fun testIllustRecommend(): Unit = runBlocking {
         for (i in 1..3) {
             val next = client.getRecommendIllust()

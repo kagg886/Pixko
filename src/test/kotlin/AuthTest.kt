@@ -33,7 +33,7 @@ class AuthTest {
         fun generatePixivAccount() =
             PixivAccountFactory.newAccountFromConfig {
                 storage = InMemoryTokenStorage().apply {
-                    setToken(TokenType.REFRESH, "tdWvtsuzCq0MFCugsiP7f-P8uh1FiSrMvQbjh3bqZTE")
+                    setToken(TokenType.REFRESH, "xtkew_VEEQOxOW2xUeNE_Y8cX1g--Fhw9CtBAC6BVPQ")
                 }
 
                 loggerLevel = PixivAccountConfig.LoggerLevel.ALL

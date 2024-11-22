@@ -135,11 +135,11 @@ data class Illust(
      */
     val limitLevel: LimitLevel by lazy {
         when (imageUrls.content) {
-            "https://s.pximg.net/common/images/limit_r18_360.png" -> LimitLevel.LIMIT_R18
-            "https://s.pximg.net/common/images/limit_r18g_360.png" -> LimitLevel.LIMIT_R18G
-            "https://s.pximg.net/common/images/limit_sanity_level_360.png" -> LimitLevel.LIMIT_R15
-            "https://s.pximg.net/common/images/limit_unknown_360.png" -> LimitLevel.LIMIT_PRIVACY
-            else -> LimitLevel.NONE
+            "https://s.pximg.net/common/images/limit_r18_360.png" -> LIMIT_R18
+            "https://s.pximg.net/common/images/limit_r18g_360.png" -> LIMIT_R18G
+            "https://s.pximg.net/common/images/limit_sanity_level_360.png" -> LIMIT_R15
+            "https://s.pximg.net/common/images/limit_unknown_360.png" -> LIMIT_PRIVACY
+            else -> NONE
         }
     }
 
@@ -147,7 +147,7 @@ data class Illust(
      * 插画的访问是否被限制。
      */
     val isLimited: Boolean by lazy {
-        limitLevel != LimitLevel.NONE
+        limitLevel != NONE
     }
 
     /**

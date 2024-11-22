@@ -59,11 +59,16 @@ data class Novel(
 
     @SerialName("novel_ai_type")
     internal val novelAiType: Int,
+
+    @SerialName("x_restrict")
+    internal val xRestrictLevel: Int,
 ) {
     /**
      * 判断小说是否为ai创作
      */
     val isAI = novelAiType == 2
+    val isR18 = xRestrictLevel == 1
+    val isR18G = xRestrictLevel == 2
 }
 
 /**

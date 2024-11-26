@@ -88,8 +88,8 @@ data class NovelData(
     val _images: JsonElement
 ) {
     val images by lazy {
-        check(_images is JsonObject) {
-            "image is empty"
+        if (_images !is JsonObject) {
+            return@lazy emptyMap()
         }
         json.decodeFromJsonElement<Map<String, NovelImages>>(_images.jsonObject)
     }
@@ -106,11 +106,12 @@ enum class NovelImagesSize(val content: String) {
     N128x128("128x128"),
     NOriginal("original")
 }
+
 @Serializable
 data class NovelImages(
     val urls: Map<String, String>
 ) {
-    operator fun get(size: NovelImagesSize) = urls[size.content]?:NoSuchElementException("no size with $size")
+    operator fun get(size: NovelImagesSize) = urls[size.content] ?: throw NoSuchElementException("no size with $size")
 }
 
 @Suppress("all")

@@ -21,7 +21,11 @@ fun createNovelData(str: String): List<NovelNode> {
         result.add(UploadImageNode(i.groupValues[1], i.range))
     }
     PIXIV_IMAGE_REGEX.findAll(str).forEach { i ->
-        result.add(PixivImageNode(i.groupValues[1].toInt(), i.range))
+        //适配多页
+        //1000(没有'-1')
+        //1000-2
+        val arr = i.groupValues[1].split("-").map { it.toInt() }
+        result.add(PixivImageNode(arr[0], arr.getOrElse(1) { 1 } - 1, i.range))
     }
     NEW_PAGE_REGEX.findAll(str).forEach { i ->
         result.add(NewPageNode(i.range))

@@ -45,7 +45,7 @@ data class UploadImageNode(val url: String, override val position: IntRange) : N
     override val blocking = true
 }
 
-data class PixivImageNode(val id: Int, override val position: IntRange) : NovelNode {
+data class PixivImageNode(val id: Int, val index: Int = 0, override val position: IntRange) : NovelNode {
     override val blocking = true
 }
 

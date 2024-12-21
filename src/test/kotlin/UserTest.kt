@@ -82,6 +82,15 @@ class UserTest {
     }
 
     @Test
+    fun testBookmarkTagsList(): Unit = runBlocking {
+        val tags = client.getAllFavoriteTags(
+            restrict = UserLikePublicity.PRIVATE,
+            favoriteTagsType = FavoriteTagsType.Illust
+        )
+        println(tags)
+    }
+
+    @Test
     fun testBookmarkIllustList(): Unit = runBlocking {
         val userId = client.getCurrentUserSimpleProfile().userId
         var a: IllustResult? = client.getUserLikeIllust(userId)

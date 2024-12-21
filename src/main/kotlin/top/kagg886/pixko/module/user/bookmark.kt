@@ -2,10 +2,14 @@ package top.kagg886.pixko.module.user
 
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.Tag
 import top.kagg886.pixko.module.illust.IllustResult
 import top.kagg886.pixko.module.illust.NovelResult
+import top.kagg886.pixko.module.user.FavoriteTagsType.Illust
+import top.kagg886.pixko.module.user.FavoriteTagsType.Novel
 import top.kagg886.pixko.module.user.TagFilter.*
 import top.kagg886.pixko.module.user.UserLikePublicity.PRIVATE
 import top.kagg886.pixko.module.user.UserLikePublicity.PUBLIC
@@ -19,6 +23,21 @@ enum class UserLikePublicity {
     PUBLIC,
     PRIVATE,
 }
+
+/**
+ * # 收藏的所有标签
+ * @property Illust 收藏的插画
+ * @property Novel 收藏的小说
+ */
+enum class FavoriteTagsType {
+    Illust, Novel
+}
+
+@Serializable
+data class FavoriteTags(
+    val name: String,
+    val count: Int
+)
 
 /**
  * # 标签过滤器
@@ -40,11 +59,39 @@ sealed interface TagFilter {
 }
 
 /**
+ * # 获取用户的收藏标签
+ * @param restrict 公开性
+ * @param favoriteTagsType 收藏的标签类型
+ * @return [FavoriteTags] 收藏的标签
+ */
+suspend fun PixivAccount.getAllFavoriteTags(
+    restrict: UserLikePublicity = PUBLIC,
+    favoriteTagsType: FavoriteTagsType = Illust,
+    page: Int = 1
+): List<FavoriteTags> {
+
+    @Serializable
+    data class FavoriteTagsReturn(
+        @SerialName("bookmark_tags")
+        val tags: List<FavoriteTags>,
+    )
+
+    return client.get("v1/user/bookmark-tags/${favoriteTagsType.name.lowercase()}") {
+        parameter("restrict", restrict.name.lowercase())
+        parameter("offset", (page - 1) * 30)
+    }.body<FavoriteTagsReturn>()
+        .tags
+}
+
+/**
  * # 获取用户收藏的插画
  * @param userId 用户id
  * @param restrict 公开性
  * @param tags 标签
  * @return [IllustResult] 用户收藏的插画
+ *
+ * @see UserLikePublicity
+ * @see TagFilter
  */
 suspend fun PixivAccount.getUserLikeIllust(
     userId: Int,
@@ -65,8 +112,11 @@ suspend fun PixivAccount.getUserLikeIllust(
  * # 获取用户收藏的小说
  * @param userId 用户id
  * @param restrict 公开性
- * @param tags 标签
+ * @param filter 标签过滤器
  * @return [NovelResult] 用户收藏的小说
+ *
+ * @see UserLikePublicity
+ * @see TagFilter
  */
 suspend fun PixivAccount.getUserLikeNovel(
     userId: Int,

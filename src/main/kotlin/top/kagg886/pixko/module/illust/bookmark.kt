@@ -5,6 +5,7 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.Tag
 
 /**
  * # 收藏可见性
@@ -19,6 +20,7 @@ enum class BookmarkVisibility {
  */
 class BookmarkOptions {
     var visibility: BookmarkVisibility = BookmarkVisibility.PUBLIC
+    var tags: List<Tag>? = null
 }
 
 /**
@@ -26,7 +28,6 @@ class BookmarkOptions {
  * @param illustId 插画id
  * @param block 收藏设置
  *
- * 
  */
 suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.() -> Unit = {}): Boolean {
     val options = BookmarkOptions().apply(block)
@@ -37,6 +38,13 @@ suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.(
                 Parameters.build {
                     append("illust_id", illustId.toString())
                     append("restrict", options.visibility.name.lowercase())
+                    val tags = options.tags
+                    if (tags != null) {
+                        check(tags.size <= 10) {
+                            "最多只能收藏10个标签"
+                        }
+                        append("tags[]", tags.joinToString(" ") { it.name })
+                    }
                 }
             )
         )
@@ -48,7 +56,7 @@ suspend fun PixivAccount.bookmarkIllust(illustId: Long, block: BookmarkOptions.(
  * # 删除插画收藏
  * @param illustId 插画id
  *
- * 
+ *
  */
 suspend fun PixivAccount.deleteBookmarkIllust(illustId: Long): Boolean {
     val resp = client.post("v1/illust/bookmark/delete") {

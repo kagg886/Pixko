@@ -29,7 +29,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.12")
 
     testImplementation(kotlin("test"))
 

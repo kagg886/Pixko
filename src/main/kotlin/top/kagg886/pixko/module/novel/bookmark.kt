@@ -20,6 +20,13 @@ suspend fun PixivAccount.bookmarkNovel(novelId: Long, block: BookmarkOptions.() 
                 Parameters.build {
                     append("novel_id", novelId.toString())
                     append("restrict", options.visibility.name.lowercase())
+                    val tags = options.tags
+                    if (tags != null) {
+                        check(tags.size <= 10) {
+                            "最多只能收藏10个标签"
+                        }
+                        append("tags[]", tags.joinToString(" ") { it.name })
+                    }
                 }
             )
         )

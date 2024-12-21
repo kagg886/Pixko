@@ -24,10 +24,10 @@ class IllustTest {
     }
 
     @Test
-    fun testR18GFilter():Unit = runBlocking {
+    fun testR18GFilter(): Unit = runBlocking {
         listOf(
             client.getIllustDetail(122433765)
-        ). apply {
+        ).apply {
             println(this.joinToString("\n\n\n") { it.toString() })
         }
     }
@@ -70,6 +70,16 @@ class IllustTest {
     @Test
     fun testBookmark(): Unit = runBlocking {
         assert(client.bookmarkIllust(85297928))
+    }
+
+    @Test
+    fun testBookmarkWithTags(): Unit = runBlocking {
+        val illust = client.getIllustDetail(85297928)
+        assert(
+            client.bookmarkIllust(85297928) {
+                tags = illust.tags
+            }
+        )
     }
 
     @Test

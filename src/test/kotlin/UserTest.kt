@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonElement
 import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
+import top.kagg886.pixko.Tag
 import top.kagg886.pixko.internal.json
 import top.kagg886.pixko.module.illust.IllustResult
 import top.kagg886.pixko.module.illust.NovelResult
@@ -85,8 +86,21 @@ class UserTest {
         val userId = client.getCurrentUserSimpleProfile().userId
         var a: IllustResult? = client.getUserLikeIllust(userId)
         while (a != null) {
-            a = client.getUserLikeIllustNext(a) ?: break
             println(a)
+            a = client.getUserLikeIllustNext(a) ?: break
+        }
+    }
+
+    @Test
+    fun testBookmarkIllustListWithTags(): Unit = runBlocking {
+        val userId = client.getCurrentUserSimpleProfile().userId
+        var a: IllustResult? = client.getUserLikeIllust(
+            userId,
+            filter = TagFilter.FilterWithTag(Tag("ソックス足裏"))
+        )
+        while (a != null) {
+            println(a)
+            a = client.getUserLikeIllustNext(a) ?: break
         }
     }
 

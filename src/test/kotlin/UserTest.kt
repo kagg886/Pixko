@@ -142,6 +142,11 @@ class UserTest {
         println(client.getUserNovel(22919310))
     }
 
+    @Test
+    fun testUserNovelSeries(): Unit = runBlocking {
+        println(client.getNovelSeries(1))
+    }
+
     companion object {
         lateinit var client: PixivAccount
 

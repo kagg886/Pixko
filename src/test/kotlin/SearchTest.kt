@@ -31,6 +31,14 @@ class SearchTest {
     }
 
     @Test
+    fun testSearchUserIllust(): Unit = runBlocking {
+        val dm = client.searchUser("呆猫", 100)
+        val dm2 = client.searchUser("呆猫", 100)
+        println(dm)
+        println(dm2)
+    }
+
+    @Test
     fun testSearchTag():Unit = runBlocking {
         println(client.searchTag("长筒"))
     }

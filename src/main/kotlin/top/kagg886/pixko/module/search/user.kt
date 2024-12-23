@@ -21,7 +21,7 @@ suspend fun PixivAccount.searchUser(
 ): List<User> {
     return client.get("v1/search/user") {
         parameter("word", keyword)
-        parameter("page", (page - 1) * 30)
+        parameter("offset", (page - 1) * 30)
     }.body<JsonElement>().jsonObject["user_previews"]!!.jsonArray.map {
         json.decodeFromJsonElement<User>(it.jsonObject["user"]!!)
     }

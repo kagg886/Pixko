@@ -3,11 +3,11 @@ package top.kagg886.pixko.module.novel.parser
 
 private val JUMP_URI_REGEX = "\\[\\[jumpuri:(.*)>(.*)]]".toRegex()
 private val NOTATION_REGEX = "\\[\\[rb:(.*)>(.*)]]".toRegex()
-private val UPLOAD_IMAGE_REGEX = "\\[uploadedimage:(.*)]".toRegex()
-private val PIXIV_IMAGE_REGEX = "\\[pixivimage:(.*)]".toRegex()
+private val UPLOAD_IMAGE_REGEX = "\\[uploadedimage:(.*?)]".toRegex()
+private val PIXIV_IMAGE_REGEX = "\\[pixivimage:(.*?)]".toRegex()
 private val NEW_PAGE_REGEX = "\\[newpage]".toRegex()
-private val CHAPTER_REGEX = "\\[chapter:(.*)]".toRegex()
-private val JUMP_PAGE_REGEX = "\\[jump:(.*)]".toRegex()
+private val CHAPTER_REGEX = "\\[chapter:(.*?)]".toRegex()
+private val JUMP_PAGE_REGEX = "\\[jump:(.*?)]".toRegex()
 fun createNovelData(str: String): List<NovelNode> {
     val result = mutableListOf<NovelNode>()
 

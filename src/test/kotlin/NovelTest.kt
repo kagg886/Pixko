@@ -2,6 +2,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.novel.*
+import top.kagg886.pixko.module.novel.parser.UploadImageNode
 import kotlin.test.Test
 
 class NovelTest {
@@ -35,8 +36,8 @@ class NovelTest {
     fun testNovelContent():Unit = runBlocking {
 
         //测试版本：22767441
-        val novel = client.getNovelContent(22767441)
-        println(novel)
+        val novel = client.getNovelContent(23351531)
+        println(novel.data.filterIsInstance<UploadImageNode>().toList().map { it.url })
     }
 
     @Test

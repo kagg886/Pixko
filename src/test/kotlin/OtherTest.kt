@@ -2,7 +2,6 @@ import kotlinx.datetime.Instant
 import top.kagg886.pixko.module.novel.parser.createNovelData
 import top.kagg886.pixko.module.novel.parser.toOriginalString
 import top.kagg886.pixko.module.profile.CountryCode
-import top.kagg886.pixko.module.profile.JapanAddress
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -10,18 +9,6 @@ class OtherTest {
     @Test
     fun testLocalDateTime() {
         println(Instant.parse("2022-07-17T13:16:49+09:00"))
-    }
-
-    @Test
-    fun testIllegalRule() {
-        val address = JapanAddress.INTERNATIONAL
-        val country = CountryCode.CHINA
-
-//        val address = JapanAddress.AOMORI
-//        val country = CountryCode.JAPAN
-        check(address != JapanAddress.INTERNATIONAL && country == CountryCode.JAPAN)
-
-        check(address == JapanAddress.INTERNATIONAL && country != CountryCode.JAPAN)
     }
 
     @Test
@@ -33,6 +20,7 @@ class OtherTest {
         assert(data.isNotEmpty())
         data.forEach(::println)
     }
+
     @Test
     fun testNovelParser() {
         val novel = """
@@ -40,7 +28,10 @@ class OtherTest {
               请前往[[jumpuri:https://github.com/kagg886/Pixko > https://github.com/kagg886/Pixko]]查看项目 1
               [newpage] 2
 
+
+              [chapter:标题114][chapter:标题514]
               [chapter:标题1] 3
+              [chapter:第[[rb:IDontKonw > idk]]章]
               上传图片[uploadedimage:18743458] 4
               p站站内图片[pixivimage:121447499] 5
               这是一个[[rb:注音 > zhu yin 1]]注音 6

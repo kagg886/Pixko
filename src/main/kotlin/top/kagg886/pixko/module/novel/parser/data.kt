@@ -24,39 +24,49 @@ package top.kagg886.pixko.module.novel.parser
 
 
 sealed interface NovelNode {
-    val blocking: Boolean
     val position: IntRange
 }
 
 
-data class PlainTextNode(val text: String, override val position: IntRange) : NovelNode {
-    override val blocking = false
+data class TextNode(val text: CombinedText, override val position: IntRange) : NovelNode
+
+data class JumpUriNode(val text: String, val uri: String, override val position: IntRange) : NovelNode
+
+//data class NotationNode(val text: String, val notation: String,override val dummy: Dummy ,@: kotlin.ranges.IntRange) : NovelNode {
+//    override val blocking = false
+//}
+
+data class UploadImageNode(val url: String, override val position: IntRange) : NovelNode
+
+data class PixivImageNode(val id: Int, val index: Int = 0, override val position: IntRange) : NovelNode
+
+data class NewPageNode(override val position: IntRange) : NovelNode
+
+data class TitleNode(val text: CombinedText, override val position: IntRange) : NovelNode
+
+data class JumpPageNode(val page: Int, override val position: IntRange) : NovelNode
+
+
+
+class CombinedText(nodes: List<CombinedTextNode>) : List<CombinedTextNode> by nodes {
+    override fun toString() = joinToString {
+        when (it) {
+            is NotatedText -> "${it.text}^{${it.notation}}"
+            is PlainText -> it.text
+        }
+    }
 }
 
-data class JumpUriNode(val text: String, val uri: String, override val position: IntRange) : NovelNode {
-    override val blocking = false
+fun List<CombinedTextNode>.asCombinedText() = CombinedText(this)
+
+sealed interface CombinedTextNode {
+    val text: String
+
+    fun asSingle() = CombinedText(listOf(this))
 }
 
-data class NotationNode(val text: String, val notation: String, override val position: IntRange) : NovelNode {
-    override val blocking = false
-}
+data class PlainText(override val text: String) : CombinedTextNode
+data class NotatedText(override val text: String, val notation: String) : CombinedTextNode
 
-data class UploadImageNode(val url: String, override val position: IntRange) : NovelNode {
-    override val blocking = true
-}
-
-data class PixivImageNode(val id: Int, val index: Int = 0, override val position: IntRange) : NovelNode {
-    override val blocking = true
-}
-
-data class NewPageNode(override val position: IntRange) : NovelNode {
-    override val blocking = true
-}
-
-data class TitleNode(val text: String, override val position: IntRange) : NovelNode {
-    override val blocking = true
-}
-
-data class JumpPageNode(val page: Int, override val position: IntRange) : NovelNode {
-    override val blocking = true
-}
+fun String.toPlainText() = PlainText(this)
+fun String.toNotatedText(notation: String) = NotatedText(this, notation)

@@ -1,8 +1,8 @@
 package top.kagg886.pixko.module.novel.parser
 
-private val JUMP_URI_REGEX = "\\[\\[jumpuri:(.*)>(.*)]]".toRegex()
+// 或在将来被使用
+// private val JUMP_URI_REGEX = "\\[\\[jumpuri:(.*)>(.*)]]".toRegex()
 private val NOTATION_REGEX = "\\[\\[rb:(.*)>(.*)]]".toRegex()
-
 
 private val TAG_REGEX = """\[{1,2}(\w+)(?::([^\[\]]+))?]{1,2}""".toRegex()
 
@@ -76,7 +76,7 @@ fun createNovelData(str: String): List<NovelNode> {
         try {
             val node = tagToNode(name, rawValue, position)
             nodes.add(node)
-        } catch (_: Exception) {
+        } catch (_: Exception) { // 处理未知tag
             nodes.add(TextNode(result.value.toPlainText().asSingle(), position))
         }
 

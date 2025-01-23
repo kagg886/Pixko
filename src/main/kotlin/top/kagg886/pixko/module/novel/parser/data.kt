@@ -32,10 +32,6 @@ data class TextNode(val text: CombinedText, override val position: IntRange) : N
 
 data class JumpUriNode(val text: String, val uri: String, override val position: IntRange) : NovelNode
 
-//data class NotationNode(val text: String, val notation: String,override val dummy: Dummy ,@: kotlin.ranges.IntRange) : NovelNode {
-//    override val blocking = false
-//}
-
 data class UploadImageNode(val url: String, override val position: IntRange) : NovelNode
 
 data class PixivImageNode(val id: Int, val index: Int = 0, override val position: IntRange) : NovelNode
@@ -47,8 +43,10 @@ data class TitleNode(val text: CombinedText, override val position: IntRange) : 
 data class JumpPageNode(val page: Int, override val position: IntRange) : NovelNode
 
 
+val NovelNode.isBlocking get() = this is JumpUriNode || this is TextNode || this is JumpPageNode
 
-class CombinedText(nodes: List<CombinedTextNode>) : List<CombinedTextNode> by nodes {
+
+class CombinedText internal constructor(nodes: List<CombinedTextNode>) : List<CombinedTextNode> by nodes {
     override fun toString() = joinToString {
         when (it) {
             is NotatedText -> "${it.text}^{${it.notation}}"

@@ -31,7 +31,16 @@ suspend fun PixivAccount.searchNovel(
     block: SearchConfig.() -> Unit = {}
 ): List<Novel> {
     val (sort, searchTarget, startDate, endDate, page) = SearchConfig().apply(block)
-
+    check(
+        searchTarget in listOf(
+            SearchTarget.EXACT_MATCH_FOR_TAGS,
+            SearchTarget.PARTIAL_MATCH_FOR_TAGS,
+            SearchTarget.TEXT,
+            SearchTarget.KEYWORD
+        )
+    ) {
+        "searchTarget must be EXACT_MATCH_FOR_TAGS,PARTIAL_MATCH_FOR_TAGS,TEXT,KEYWORD"
+    }
     val userInfo = getCurrentUserSimpleProfile()
     if (!userInfo.isPremium && sort == POPULAR_DESC) {
         if (page != 1) {

@@ -26,12 +26,17 @@ enum class SearchSort {
  * # 搜索目标
  * @property EXACT_MATCH_FOR_TAGS 精确匹配标签
  * @property PARTIAL_MATCH_FOR_TAGS 模糊匹配标签
- * @property TITLE_AND_CAPTION 标题和描述
+ * @property TITLE_AND_CAPTION 标题和描述 (仅限插画)
+ * @property TEXT 描述(仅限小说)
+ * @property KEYWORD 关键词(仅限小说)
+ *
  */
 enum class SearchTarget {
     EXACT_MATCH_FOR_TAGS,
     PARTIAL_MATCH_FOR_TAGS,
-    TITLE_AND_CAPTION
+    TITLE_AND_CAPTION,
+    TEXT,
+    KEYWORD
 }
 
 /**
@@ -43,8 +48,8 @@ enum class SearchTarget {
  * @property page 页码
  */
 data class SearchConfig(
-    var sort: SearchSort = SearchSort.DATE_DESC,
-    var searchTarget: SearchTarget = SearchTarget.PARTIAL_MATCH_FOR_TAGS,
+    var sort: SearchSort = DATE_DESC,
+    var searchTarget: SearchTarget = PARTIAL_MATCH_FOR_TAGS,
     var startDate: LocalDateTime? = null,
     var endDate: LocalDateTime? = null,
     var page: Int = 1
@@ -61,6 +66,9 @@ suspend fun PixivAccount.searchIllust(
     block: SearchConfig.() -> Unit = {}
 ): List<Illust> {
     val (sort, searchTarget, startDate, endDate, page) = SearchConfig().apply(block)
+    check(searchTarget in listOf(EXACT_MATCH_FOR_TAGS, PARTIAL_MATCH_FOR_TAGS, TITLE_AND_CAPTION)) {
+        "searchTarget must be EXACT_MATCH_FOR_TAGS, PARTIAL_MATCH_FOR_TAGS or TITLE_AND_CAPTION"
+    }
     val userInfo = getCurrentUserSimpleProfile()
     if (!userInfo.isPremium && sort == POPULAR_DESC) {
         if (page != 1) {

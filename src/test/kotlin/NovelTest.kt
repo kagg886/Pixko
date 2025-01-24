@@ -14,8 +14,8 @@ class NovelTest {
     }
 
     @Test
-    fun testDetail():Unit = runBlocking {
-        val novel = client.getNovelDetail( 22767441)
+    fun testDetail(): Unit = runBlocking {
+        val novel = client.getNovelDetail(22767441)
     }
 
     @Test
@@ -33,20 +33,20 @@ class NovelTest {
     }
 
     @Test
-    fun testNovelContent():Unit = runBlocking {
+    fun testNovelContent(): Unit = runBlocking {
 
         //测试版本：22767441
         val novel = client.getNovelContent(23351531)
-        println(novel.data.filterIsInstance<UploadImageNode>().toList().map { it.url })
+        println(novel.data.filterIsInstance<UploadImageNode>().map { it.url })
     }
 
     @Test
-    fun testNovelBookmark():Unit = runBlocking {
+    fun testNovelBookmark(): Unit = runBlocking {
         client.bookmarkNovel(21844391)
     }
 
     @Test
-    fun testNovelBookmarkDelete():Unit = runBlocking {
+    fun testNovelBookmarkDelete(): Unit = runBlocking {
         val novel = client.deleteBookmarkNovel(21844391)
         println(novel)
     }

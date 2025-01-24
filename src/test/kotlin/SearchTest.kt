@@ -2,13 +2,23 @@
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import top.kagg886.pixko.PixivAccount
-import top.kagg886.pixko.module.search.searchIllust
-import top.kagg886.pixko.module.search.searchNovel
-import top.kagg886.pixko.module.search.searchTag
-import top.kagg886.pixko.module.search.searchUser
+import top.kagg886.pixko.module.search.*
 import kotlin.test.Test
 
 class SearchTest {
+    @Test
+    fun testSearchNovelCustomConfig(): Unit = runBlocking {
+        for (i in 1..3) {
+            client.searchNovel("米拉") {
+                page = i
+                searchTarget = SearchTarget.TEXT
+            }.apply {
+                println(this)
+            }
+        }
+
+    }
+
     @Test
     fun testSearchNovel(): Unit = runBlocking {
         for (i in 1..3) {

@@ -1,5 +1,7 @@
 package top.kagg886.pixko.module.novel.parser.v2
 
+import top.kagg886.pixko.anno.ExperimentalNovelParserAPI
+
 // 或在将来被使用
 // private val JUMP_URI_REGEX = "\\[\\[jumpuri:(.*)>(.*)]]".toRegex()
 private val NOTATION_REGEX = "\\[\\[rb:(.*)>(.*)]]".toRegex()
@@ -63,7 +65,8 @@ private fun tagToNode(
         else -> error("Unknown tag name:$name")
     }
 
-fun createNovelData(str: String): List<NovelNode> {
+@ExperimentalNovelParserAPI
+fun createNovelDataV2(str: String): List<NovelNode> {
     val nodes = mutableListOf<NovelNode>()
     var lastIndex = 0
 
@@ -94,6 +97,7 @@ fun createNovelData(str: String): List<NovelNode> {
     return nodes
 }
 
+@ExperimentalNovelParserAPI
 fun List<NovelNode>.toOriginalString(): String {
     fun CombinedText.toOriginalString() = joinToString("") {
         when (it) {

@@ -1,6 +1,7 @@
 import kotlinx.datetime.Instant
 import top.kagg886.pixko.module.novel.parser.createNovelData
 import top.kagg886.pixko.module.novel.parser.toOriginalString
+import top.kagg886.pixko.module.novel.parser.v2.createNovelDataV2
 import top.kagg886.pixko.module.novel.parser.v2.toOriginalString
 import top.kagg886.pixko.module.profile.CountryCode
 import kotlin.test.Test
@@ -56,7 +57,7 @@ class OtherTest {
               [chapter:6. 跳转测试2]
               点击右侧文本前往[jump:5]
         """.trimIndent()
-        val data = top.kagg886.pixko.module.novel.parser.v2.createNovelData(str = novel)
+        val data = createNovelDataV2(str = novel)
 
         data.forEach(::println)
         println(data.toOriginalString())

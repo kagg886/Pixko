@@ -26,6 +26,9 @@ private fun tagToNode(
             val (text, url) = rawValue.split(">", limit = 2).also {
                 check(it.size == 2) { "Cannot find separator(>)" }
             }
+            check(url.startsWith("http")) {
+                "Invalid url:$url"
+            }
             JumpUriNode(text, url, position)
         }
 
@@ -106,7 +109,7 @@ fun List<NovelNode>.toOriginalString(): String {
                     is TextNode -> v.text.toOriginalString()
                     is JumpUriNode -> "[[jumpuri:${v.text}>${v.uri}]]"
                     is UploadImageNode -> "[uploadedimage:${v.url}]"
-                    is PixivImageNode -> "[pixivimage:${v.id}]"
+                    is PixivImageNode -> "[pixivimage:${v.id}${if (v.index != 0) "-${v.index + 1}" else ""}]"
                     is NewPageNode -> "[newpage]"
                     is TitleNode -> "[chapter:${v.text.toOriginalString()}]"
                     is JumpPageNode -> "[jump:${v.page}]"

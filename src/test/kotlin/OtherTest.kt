@@ -24,33 +24,36 @@ class OtherTest {
     @Test
     fun testNovelParser() {
         val novel = """
+              [chapter:1. 引子]
               如你所见，该小说用于测试文本解析器性能
-              请前往[[jumpuri:https://github.com/kagg886/Pixko > https://github.com/kagg886/Pixko]]查看项目 1
-              [newpage] 2
-
-
-              [chapter:标题114][chapter:标题514]
-              [chapter:标题1] 3
-              [chapter:第[[rb:IDontKonw > idk]]章]
-              上传图片[uploadedimage:18743458] 4
-              p站站内图片[pixivimage:121447499] 5
-              这是一个[[rb:注音 > zhu yin 1]]注音 6
-              我就使用这个的东西，而且没有转义[abcd]
-              ][
-              [abcd:1]
-              这是一个内部跳转[jump:3] 7
-
-
+              请前往[[jumpuri:https://github.com/kagg886/Pixko > https://github.com/kagg886/Pixko]]查看项目
               [newpage]
-              ——[chapter:标题1]页面2
 
+              [chapter:2. 图片测试]
+              上传图片[uploadedimage:18743458]
+              p站站内图片[pixivimage:108181682]
+              连续的两张图片[pixivimage:108181682][pixivimage:108181682-2]
               [newpage]
-              页面3
 
+              [chapter:3. [[rb:注音>zhu yin]]测试]
+              这是一个[[rb:注音 > zhu yin 1]]注音
               [newpage]
-              页面4
-              [jump:1]
-              页面5
+
+              [chapter:4. 非法标签测试]
+              注音不可以嵌套注音，就像[[rb:注音 > [[rb:套注音 > taozhuyin]]]]
+              注音无大于号将不会被解析[[rb:注音]]，但是有的话会被解析[[rb:注音>qwq]]
+              非法站内图片会解析成纯文本：[pixivimage:]
+              非法链接会解析成纯文本：[[jumpuri:https://github.com/kagg886/Pixko]]
+              非法链接会解析成纯文本：[[jumpuri:>qwq]]
+              非法链接会解析成纯文本：[[jumpuri:awa>qwq]]
+              [newpage]
+
+              [chapter:5. 跳转测试1]
+              点击右侧文本前往[jump:6]
+              [newpage]
+
+              [chapter:6. 跳转测试2]
+              点击右侧文本前往[jump:5]
         """.trimIndent()
         val data = createNovelData(str = novel)
 

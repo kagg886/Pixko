@@ -15,6 +15,10 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import top.kagg886.pixko.PixivAccountFactory.newAccount
 import top.kagg886.pixko.PixivAccountFactory.newAccountFromConfig
+import java.security.MessageDigest
+import java.security.SecureRandom
+import java.util.*
+import kotlin.random.asKotlinRandom
 
 //从APK中提取，不解释
 internal const val pixiv_client_id = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
@@ -27,16 +31,35 @@ internal const val pixiv_client_secret = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrd
  * @see newAccountFromConfig
  */
 object PixivAccountFactory {
-
-    internal const val code_verify = "-29P7XEuFCNdG-1aiYZ9tTeYrABWRHxS9ZVNr6yrdcI"
-    internal const val code_challenge = "usItTkssolVsmIbxrf0o-O_FsdvZFANVPCf9jP4jP_0"
-
+    private const val CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+    private val RANDOM = SecureRandom().asKotlinRandom()
+    private val SHA256 = MessageDigest.getInstance("SHA-256")
 
     /**
      * # 创建一个Pixiv账号验证器
      * 该验证器会返回一个Pixiv验证器，请参考[PixivVerification]
      */
-    fun newAccount(): PixivVerification = PixivVerification(code_challenge, code_verify)
+    fun newAccount(): PixivVerification {
+        val verify = List(128) { CODES.random(RANDOM) }.joinToString("")
+        return newAccount(verify)
+    }
+
+    /**
+     * # 创建一个Pixiv账号验证器
+     * 该验证器会返回一个Pixiv验证器，请参考[PixivVerification]
+     *
+     * > 注意，verify请自行生成。
+     */
+    fun newAccount(verify: String): PixivVerification {
+        // final codeChallenge = base64Url.encode(
+        //       sha256.convert(ascii.encode(Constants.code_verifier!)).bytes
+        //).replaceAll('=', '');
+        val challenge = kotlin.run {
+            SHA256.update(verify.toByteArray())
+            Base64.getUrlEncoder().encode(SHA256.digest()).decodeToString().replace("=", "")
+        }
+        return PixivVerification(challenge, verify)
+    }
 
     /**
      * # 直接创建一个Pixiv账号
@@ -88,7 +111,7 @@ class PixivVerification(
         val config = PixivAccountConfig().apply(block)
 
         HttpClient(OkHttp) {
-            install (ContentNegotiation) {
+            install(ContentNegotiation) {
                 json(top.kagg886.pixko.internal.json)
             }
             engine {

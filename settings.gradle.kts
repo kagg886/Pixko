@@ -1,5 +1,32 @@
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+rootProject.name = "Pixko"
+
+pluginManagement {
+    repositories {
+        google {
+            content { 
+              	includeGroupByRegex("com\\.android.*")
+              	includeGroupByRegex("com\\.google.*")
+              	includeGroupByRegex("androidx.*")
+              	includeGroupByRegex("android.*")
+            }
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
 }
-rootProject.name = "pixko"
+
+dependencyResolutionManagement {
+    repositories {
+        google {
+            content { 
+              	includeGroupByRegex("com\\.android.*")
+              	includeGroupByRegex("com\\.google.*")
+              	includeGroupByRegex("androidx.*")
+              	includeGroupByRegex("android.*")
+            }
+        }
+        mavenCentral()
+    }
+}
+include(":lib")
 

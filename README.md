@@ -1,6 +1,8 @@
 # Pixko
 
-Pixco是一个适用于pixiv-android的库
+Pixko是一个适用于pixiv-android的库。
+
+现已经加入IOS豪华套餐
 
 ## 引入
 

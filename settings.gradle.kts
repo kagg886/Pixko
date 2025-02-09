@@ -1,4 +1,4 @@
-rootProject.name = "Pixko"
+rootProject.name = "pixko"
 
 pluginManagement {
     repositories {

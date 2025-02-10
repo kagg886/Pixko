@@ -19,6 +19,7 @@ jobs:
       - name: Publish
         run: ./gradlew publishAndReleaseToMavenCentral
         env:
+          org.gradle.configuration-cache: false
           APP_VERSION: ${{ github.ref_name }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVENCENTRALUSERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVENCENTRALPASSWORD }}

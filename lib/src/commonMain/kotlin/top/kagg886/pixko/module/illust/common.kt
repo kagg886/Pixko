@@ -45,6 +45,7 @@ data class ImageUrlsWrapper(
  * @property title 插画标题
  * @property imageUrls 插画图片链接
  * @property caption 插画描述,为html格式
+ * @property type 插画类型：已知["illust","ugoira","manga"]
  * @property user 插画作者
  * @property tags 插画标签
  * @property createTime 插画创建时间
@@ -66,6 +67,8 @@ data class Illust(
     val title: String,
     //html encoded
     val caption: String,
+
+    internal val type: String,
 
     val user: User,
     val tags: List<Tag>,
@@ -89,7 +92,6 @@ data class Illust(
     @SerialName("meta_pages") internal val _metaPages: List<ImageUrlsWrapper>, //多页漫画详情接口包含origin
     @SerialName("meta_single_page") internal val singlePageMeta: JsonElement? = null, //单页漫画详情接口包含origin
 ) {
-
     /**
      * 是否为R18G
      */
@@ -99,6 +101,8 @@ data class Illust(
      * 是否为R18
      */
     val isR18: Boolean = isR18G || xRestrict == 1 && sanityLevel >= 4
+
+    val isUgoira: Boolean = type == "ugoira"
 
 
     /**

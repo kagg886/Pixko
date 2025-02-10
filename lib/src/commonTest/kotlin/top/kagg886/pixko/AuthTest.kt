@@ -11,7 +11,7 @@ class AuthTest {
     fun testRandomVerify() {
         val account = PixivAccountFactory.newAccount()
 
-        assertEquals(128,account.codeVerify.length)
+        assertEquals(128, account.codeVerify.length)
     }
 
     @Test
@@ -39,7 +39,7 @@ class AuthTest {
                 setToken(TokenType.REFRESH, "qwq")
             }
 
-            logger = object :Logger {
+            logger = object : Logger {
                 override fun log(message: String) {
                     println(message)
                 }
@@ -57,12 +57,10 @@ class AuthTest {
                 storage = InMemoryTokenStorage().apply {
                     setToken(TokenType.REFRESH, "xtkew_VEEQOxOW2xUeNE_Y8cX1g--Fhw9CtBAC6BVPQ")
                 }
-
-                logger = object :Logger {
+                logger = object : Logger {
                     override fun log(message: String) {
                         println(message)
                     }
-
                 }
             }
     }

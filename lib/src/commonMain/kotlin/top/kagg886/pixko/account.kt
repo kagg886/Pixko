@@ -81,14 +81,19 @@ class PixivAccount internal constructor(private val config: PixivAccountConfig) 
 
         install(Logging) {
             logger = config.logger
-            level = LogLevel.HEADERS
+            level = LogLevel.ALL
         }
 
-        install(HttpTimeout)
+        install(HttpTimeout) {
+            requestTimeoutMillis = 30000
+            socketTimeoutMillis = 30000
+            connectTimeoutMillis = 30000
+        }
 
         defaultRequest {
             url("https://app-api.pixiv.net/")
             header("Accept-Language", config.language)
+            header("Referer","https://app-api.pixiv.net/")
         }
     }
 

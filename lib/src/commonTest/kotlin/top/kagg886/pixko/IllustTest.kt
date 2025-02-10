@@ -1,13 +1,26 @@
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.io.files.FileSystem
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.*
 import top.kagg886.pixko.module.search.SearchSort
 import top.kagg886.pixko.module.search.searchIllust
+import top.kagg886.pixko.module.ugoira.getUgoiraMetadata
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class IllustTest {
+    lateinit var client: PixivAccount
+
+    @BeforeTest
+    fun preparePixivClient() {
+        client = AuthTest.generatePixivAccount()
+    }
     @Test
     fun testFollow(): Unit = runBlocking {
         println(client.getIllustFollowList())
@@ -58,6 +71,29 @@ class IllustTest {
     }
 
     @Test
+    fun testUgoiraIllust():Unit = runBlocking {
+        //a ugoira was built by a zip contained the frame.
+        val a = client.getIllustDetail(126473222)
+        val b = client.getUgoiraMetadata(a)
+        val channel = client.client.get(b.url.content).body<ByteReadChannel>()
+        println(b)
+
+        val path = Path("a.zip")
+
+        if (SystemFileSystem.exists(path)) {
+            SystemFileSystem.delete(path)
+        }
+
+
+        val sink = SystemFileSystem.sink(path)
+
+        channel.readBuffer().use {
+            sink.write(it,it.size)
+        }
+
+    }
+
+    @Test
     fun testBookmark(): Unit = runBlocking {
         assertTrue(client.bookmarkIllust(85297928))
     }
@@ -89,14 +125,5 @@ class IllustTest {
             page = 2
         }
         assertTrue(list.isEmpty())
-    }
-
-    companion object {
-        lateinit var client: PixivAccount
-
-        @BeforeTest
-        fun preparePixivClient() {
-            client = AuthTest.generatePixivAccount()
-        }
     }
 }

@@ -4,7 +4,6 @@ import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
 import top.kagg886.pixko.TokenType.ACCESS
@@ -46,16 +45,13 @@ class InMemoryTokenStorage : TokenStorage {
  * # Pixiv账号配置
  * @see PixivAccount
  * @property engine http引擎
- * @property config http引擎配置
  * @property storage token存储器
- * @property logger 日志工具
  * @property language 语言配置，置null则为日文。
  */
 class PixivAccountConfig<Engine : HttpClientEngineConfig>(val engine: HttpClientEngineFactory<Engine>) {
     var config: HttpClientConfig<Engine>.() -> Unit = {}
 
     var storage: TokenStorage = InMemoryTokenStorage()
-    var logger: Logger = Logger.EMPTY
     var language: String? = "zh-CN"
 }
 
@@ -81,11 +77,6 @@ class InternalPixivAccount<Engine : HttpClientEngineConfig> internal constructor
 
         install(TokenAutoRefreshPluginV2) {
             storage = config.storage
-        }
-
-        install(Logging) {
-            logger = config.logger
-            level = LogLevel.ALL
         }
 
         install(HttpTimeout) {

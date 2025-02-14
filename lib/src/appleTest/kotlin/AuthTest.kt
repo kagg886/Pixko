@@ -1,5 +1,4 @@
 import io.ktor.client.engine.darwin.*
-import io.ktor.client.plugins.logging.*
 import kotlinx.coroutines.runBlocking
 import top.kagg886.pixko.InMemoryTokenStorage
 import top.kagg886.pixko.InvaidRefreshTokenException
@@ -48,13 +47,6 @@ class AuthTest {
                 setToken(TokenType.ACCESS, "awa")
                 setToken(TokenType.REFRESH, "qwq")
             }
-
-            logger = object : Logger {
-                override fun log(message: String) {
-                    println(message)
-                }
-
-            }
         }
         assertFailsWith(InvaidRefreshTokenException::class) {
             client.getRecommendIllust()
@@ -66,11 +58,6 @@ class AuthTest {
             PixivAccountFactory.newAccountFromConfig(Darwin) {
                 storage = InMemoryTokenStorage().apply {
                     setToken(TokenType.REFRESH, "xtkew_VEEQOxOW2xUeNE_Y8cX1g--Fhw9CtBAC6BVPQ")
-                }
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println(message)
-                    }
                 }
             }
     }

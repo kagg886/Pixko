@@ -4,18 +4,13 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import top.kagg886.pixko.ImageUrls
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.User
 import top.kagg886.pixko.internal.json
-import top.kagg886.pixko.module.illust.Comment
-import top.kagg886.pixko.module.illust.IllustFollowPublicity
 
 /**
  * # 关注一个用户

@@ -4,7 +4,6 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 import top.kagg886.pixko.ImageUrls
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.Illust

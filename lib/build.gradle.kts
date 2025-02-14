@@ -32,33 +32,31 @@ kotlin {
             implementation(libs.kotlin.reflect)
 
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
 
+            //shouldn't hard-encoding ktor engines, selected by user.
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.client.cio)
 
+            //crypto lib should provide it by user.
             implementation(libs.cryptography.core)
         }
+
 
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
 
-        androidMain.dependencies {
-            implementation(libs.kotlinx.coroutines.android)
-        }
-
-        jvmMain.dependencies {
-            implementation(libs.kotlinx.coroutines.swing)
+        jvmTest.dependencies {
+            implementation(libs.ktor.client.okhttp)
             implementation(libs.cryptography.provider.jdk)
         }
 
-        iosMain.dependencies {
+        appleTest.dependencies {
+            implementation(libs.ktor.client.darwin)
             implementation(libs.cryptography.provider.apple)
         }
     }
@@ -81,6 +79,9 @@ android {
     defaultConfig {
         minSdk = 21
     }
+}
+dependencies {
+    implementation("io.ktor:ktor-client-okhttp-jvm:3.0.3")
 }
 
 

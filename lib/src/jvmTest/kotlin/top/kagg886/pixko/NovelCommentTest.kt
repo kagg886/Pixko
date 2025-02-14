@@ -1,6 +1,5 @@
-
+package top.kagg886.pixko
 import kotlinx.coroutines.runBlocking
-import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.novel.deleteNovelComment
 import top.kagg886.pixko.module.novel.getNovelComment
 import top.kagg886.pixko.module.novel.getNovelCommentReply

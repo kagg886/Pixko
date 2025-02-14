@@ -1,8 +1,7 @@
-
+package top.kagg886.pixko
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
-import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.search.*
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.minutes

@@ -1,10 +1,10 @@
+package top.kagg886.pixko
+
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.BeforeTest
-import top.kagg886.pixko.PixivAccount
-import top.kagg886.pixko.Tag
 import top.kagg886.pixko.internal.json
 import top.kagg886.pixko.module.illust.IllustResult
 import top.kagg886.pixko.module.illust.NovelResult

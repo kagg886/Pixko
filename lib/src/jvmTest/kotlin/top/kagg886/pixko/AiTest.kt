@@ -1,5 +1,6 @@
+package top.kagg886.pixko
+
 import kotlinx.coroutines.runBlocking
-import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.ai.isAllowedAiShow
 import top.kagg886.pixko.module.ai.setAllowedAiShow
 import kotlin.test.BeforeTest

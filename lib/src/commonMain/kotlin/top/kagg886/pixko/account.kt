@@ -1,7 +1,7 @@
 package top.kagg886.pixko
 
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
+import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
@@ -45,30 +45,34 @@ class InMemoryTokenStorage : TokenStorage {
 /**
  * # Pixiv账号配置
  * @see PixivAccount
+ * @property engine http引擎
+ * @property config http引擎配置
  * @property storage token存储器
  * @property logger 日志工具
  * @property language 语言配置，置null则为日文。
  */
-class PixivAccountConfig {
+class PixivAccountConfig<Engine : HttpClientEngineConfig>(val engine: HttpClientEngineFactory<Engine>) {
+    var config: HttpClientConfig<Engine>.() -> Unit = {}
+
     var storage: TokenStorage = InMemoryTokenStorage()
     var logger: Logger = Logger.EMPTY
     var language: String? = "zh-CN"
-    var engine: CIOEngineConfig.() -> Unit = {}
 }
 
+
+typealias PixivAccount = InternalPixivAccount<*>
 /**
  * # PixivAPP Client
  * 内部仅包含程序的核心部分，api定义在[top.kagg886.pixko.module]中
  *
  * @see PixivAccountFactory
  */
-class PixivAccount internal constructor(private val config: PixivAccountConfig) :
-    AutoCloseable {
+class InternalPixivAccount<Engine : HttpClientEngineConfig> internal constructor(
+    private val config: PixivAccountConfig<Engine>
+) : AutoCloseable {
 
-    internal val client = HttpClient(CIO) {
-        engine {
-            config.engine(this)
-        }
+    internal val client = HttpClient(config.engine) {
+        config.config(this)
 
         install(ContentNegotiation) {
             json(top.kagg886.pixko.internal.json)
@@ -93,7 +97,7 @@ class PixivAccount internal constructor(private val config: PixivAccountConfig) 
         defaultRequest {
             url("https://app-api.pixiv.net/")
             header("Accept-Language", config.language)
-            header("Referer","https://app-api.pixiv.net/")
+            header("Referer", "https://app-api.pixiv.net/")
         }
     }
 

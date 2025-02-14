@@ -1,11 +1,11 @@
+package top.kagg886.pixko
+
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.io.files.FileSystem
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.illust.*
 import top.kagg886.pixko.module.search.SearchSort
 import top.kagg886.pixko.module.search.searchIllust
@@ -21,6 +21,7 @@ class IllustTest {
     fun preparePixivClient() {
         client = AuthTest.generatePixivAccount()
     }
+
     @Test
     fun testFollow(): Unit = runBlocking {
         println(client.getIllustFollowList())
@@ -71,7 +72,7 @@ class IllustTest {
     }
 
     @Test
-    fun testUgoiraIllust():Unit = runBlocking {
+    fun testUgoiraIllust(): Unit = runBlocking {
         //a ugoira was built by a zip contained the frame.
         val a = client.getIllustDetail(126473222)
         val b = client.getUgoiraMetadata(a)
@@ -88,7 +89,7 @@ class IllustTest {
         val sink = SystemFileSystem.sink(path)
 
         channel.readBuffer().use {
-            sink.write(it,it.size)
+            sink.write(it, it.size)
         }
 
     }

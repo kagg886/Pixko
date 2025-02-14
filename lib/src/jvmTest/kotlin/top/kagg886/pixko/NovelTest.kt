@@ -1,6 +1,7 @@
+package top.kagg886.pixko
+
 import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
-import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.novel.*
 import top.kagg886.pixko.module.novel.parser.UploadImageNode
 import kotlin.test.Test
@@ -55,7 +56,7 @@ class NovelTest {
     companion object {
         lateinit var client: PixivAccount
 
-        
+
         @BeforeTest
         fun preparePixivClient() {
             client = AuthTest.generatePixivAccount()

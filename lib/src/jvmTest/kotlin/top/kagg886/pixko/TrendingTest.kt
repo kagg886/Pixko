@@ -1,7 +1,6 @@
-
+package top.kagg886.pixko
 import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
-import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.module.trending.getRecommendTags
 import kotlin.test.Test
 
@@ -15,7 +14,7 @@ class TrendingTest {
     companion object {
         lateinit var client: PixivAccount
 
-        
+
         @BeforeTest
         fun preparePixivClient() {
             client = AuthTest.generatePixivAccount()

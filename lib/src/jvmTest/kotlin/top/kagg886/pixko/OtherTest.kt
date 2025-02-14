@@ -1,3 +1,5 @@
+package top.kagg886.pixko
+
 import kotlinx.datetime.Instant
 import top.kagg886.pixko.anno.ExperimentalNovelParserAPI
 import top.kagg886.pixko.module.novel.parser.createNovelData

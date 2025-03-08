@@ -1,5 +1,10 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+@file:Suppress("unused")
+
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.testing.mocha.KotlinMocha
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -27,6 +32,39 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    val mochaConfig: KotlinMocha.() -> Unit = {
+        timeout = "10s"
+    }
+
+    js(IR) {
+        moduleName = project.name
+        browser {
+            testTask {
+                useMocha(mochaConfig)
+            }
+        }
+        nodejs {
+            testTask {
+                useMocha(mochaConfig)
+            }
+        }
+    }
+    wasmJs {
+        moduleName = project.name
+        browser {
+            testTask {
+                useMocha(mochaConfig)
+            }
+        }
+        nodejs {
+            testTask {
+                useMocha(mochaConfig)
+            }
+        }
+    }
+
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlin.reflect)
@@ -40,27 +78,46 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
 
-            //crypto lib should provide it by user.
-            implementation(libs.cryptography.core)
+            implementation(libs.okio)
         }
 
 
-        commonTest.dependencies {
-            implementation(kotlin("test"))
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
+            }
         }
 
-        jvmTest.dependencies {
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.cryptography.provider.jdk)
+        jvmTest {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
+            }
         }
 
-        appleTest.dependencies {
-            implementation(libs.ktor.client.darwin)
-            implementation(libs.cryptography.provider.apple)
+
+        appleTest  {
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
+        }
+
+        val webTest by creating {
+            dependsOn(commonTest.get())
+
+            dependencies {
+                implementation(libs.ktor.client.js)
+            }
+        }
+        wasmJsTest {
+            dependsOn(webTest)
+        }
+        jsTest {
+            dependsOn(webTest)
         }
     }
 
-    //https://kotlinlang.org/docs/native-objc-interop.html#export-of-kdoc-comments-to-generated-objective-c-headers
+    // https://kotlinlang.org/docs/native-objc-interop.html#export-of-kdoc-comments-to-generated-objective-c-headers
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations["main"].compileTaskProvider.configure {
             compilerOptions {
@@ -68,8 +125,18 @@ kotlin {
             }
         }
     }
-
+    // https://youtrack.jetbrains.com/issue/KT-61573
+    targets.configureEach {
+        compilations.configureEach {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
+            }
+        }
+    }
 }
+
 
 android {
     namespace = "top.kagg886.pixko"

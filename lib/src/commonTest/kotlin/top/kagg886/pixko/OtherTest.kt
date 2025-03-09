@@ -9,6 +9,7 @@ import top.kagg886.pixko.module.novel.parser.v2.toOriginalString
 import top.kagg886.pixko.module.profile.CountryCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class OtherTest {
     @Test
@@ -22,7 +23,7 @@ class OtherTest {
             123456
         """.trimIndent()
         val data = createNovelData(str = novel)
-        assert(data.isNotEmpty())
+        assertTrue(data.isNotEmpty())
         data.forEach(::println)
     }
 

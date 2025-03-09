@@ -2,9 +2,8 @@ package top.kagg886.pixko
 
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
-import kotlin.test.BeforeTest
 import top.kagg886.pixko.internal.json
 import top.kagg886.pixko.module.illust.IllustResult
 import top.kagg886.pixko.module.illust.NovelResult
@@ -13,26 +12,21 @@ import top.kagg886.pixko.module.profile.JapanAddress
 import top.kagg886.pixko.module.user.*
 import kotlin.test.Test
 
-class UserTest {
-    lateinit var client: PixivAccount
-    @BeforeTest
-    fun preparePixivClient() {
-        client = AuthTest.generatePixivAccount()
-    }
+class UserTest : TestWithClient() {
     @Test
-    fun testProfile(): Unit = runBlocking {
+    fun testProfile() = runTest {
         val state = client.getCurrentUserSimpleProfile()
         println(state)
     }
 
     @Test
-    fun testUserIllusts():Unit = runBlocking {
+    fun testUserIllusts() = runTest {
         val state = client.getUserIllust(20235288)
         println(state)
     }
 
     @Test
-    fun testUserDetail(): Unit = runBlocking {
+    fun testUserDetail() = runTest {
         val state = client.getUserInfo(38000473)
         println(state)
         with(state) {
@@ -44,13 +38,13 @@ class UserTest {
     }
 
     @Test
-    fun testPreset(): Unit = runBlocking {
+    fun testPreset() = runTest {
         val state = client.client.get("v1/user/profile/presets")
         println(json.decodeFromString<JsonElement>(state.bodyAsText()))
     }
 
     @Test
-    fun testUserWorkSpaceEdit(): Unit = runBlocking {
+    fun testUserWorkSpaceEdit() = runTest {
         val userId = client.getCurrentUserSimpleProfile().userId
         val workspace = client.getUserInfo(userId).workspace
 
@@ -58,7 +52,7 @@ class UserTest {
     }
 
     @Test
-    fun testUserProfileEdit(): Unit = runBlocking {
+    fun testUserProfileEdit() = runTest {
         val userId = client.getCurrentUserSimpleProfile().userId
         val profile = client.getUserInfo(userId).buildSettings {
             country = CountryCode.CHINA
@@ -80,7 +74,7 @@ class UserTest {
     }
 
     @Test
-    fun testBookmarkTagsList(): Unit = runBlocking {
+    fun testBookmarkTagsList() = runTest {
         val tags = client.getAllFavoriteTags(
             restrict = UserLikePublicity.PRIVATE,
             favoriteTagsType = FavoriteTagsType.Illust
@@ -89,7 +83,7 @@ class UserTest {
     }
 
     @Test
-    fun testBookmarkIllustList(): Unit = runBlocking {
+    fun testBookmarkIllustList() = runTest {
         val userId = client.getCurrentUserSimpleProfile().userId
         var a: IllustResult? = client.getUserLikeIllust(userId)
         while (a != null) {
@@ -99,7 +93,7 @@ class UserTest {
     }
 
     @Test
-    fun testBookmarkIllustListWithTags(): Unit = runBlocking {
+    fun testBookmarkIllustListWithTags() = runTest {
         val userId = client.getCurrentUserSimpleProfile().userId
         var a: IllustResult? = client.getUserLikeIllust(
             userId,
@@ -112,7 +106,7 @@ class UserTest {
     }
 
     @Test
-    fun testBookmarkNovelList(): Unit = runBlocking {
+    fun testBookmarkNovelList() = runTest {
         val userId = client.getCurrentUserSimpleProfile().userId
         var a: NovelResult? = client.getUserLikeNovel(userId)
         while (a != null) {
@@ -122,26 +116,26 @@ class UserTest {
     }
 
     @Test
-    fun testUserUnFollow():Unit = runBlocking {
+    fun testUserUnFollow() = runTest {
         client.unFollowUser(13379747)
     }
 
     @Test
-    fun testUserFollow():Unit = runBlocking {
+    fun testUserFollow() = runTest {
         client.followUser(13379747)
     }
     @Test
-    fun testUserFollowList():Unit = runBlocking {
+    fun testUserFollowList() = runTest {
         println(client.getFollowingList(13379747))
     }
 
     @Test
-    fun testUserNovel():Unit = runBlocking {
+    fun testUserNovel() = runTest {
         println(client.getUserNovel(22919310))
     }
 
     @Test
-    fun testUserNovelSeries(): Unit = runBlocking {
+    fun testUserNovelSeries() = runTest {
         println(client.getNovelSeries(1))
     }
 }

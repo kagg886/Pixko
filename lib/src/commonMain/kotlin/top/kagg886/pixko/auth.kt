@@ -1,8 +1,6 @@
 package top.kagg886.pixko
 
 
-import dev.whyoleg.cryptography.CryptographyProvider
-import dev.whyoleg.cryptography.algorithms.SHA256
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
@@ -16,6 +14,7 @@ import kotlinx.datetime.Clock
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import okio.ByteString.Companion.toByteString
 import top.kagg886.pixko.PixivAccountFactory.newAccount
 import top.kagg886.pixko.PixivAccountFactory.newAccountFromConfig
 import top.kagg886.pixko.internal.json
@@ -36,9 +35,9 @@ internal const val pixiv_client_secret = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrd
 object PixivAccountFactory {
     private const val CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
     private val RANDOM = Random(Clock.System.now().toEpochMilliseconds())
-    private val HASH = CryptographyProvider.Default
-        .get(SHA256)
-        .hasher()
+//    private val HASH = CryptographyProvider.Default
+//        .get(SHA256)
+//        .hasher()
 
     /**
      * # 创建一个Pixiv账号验证器
@@ -64,9 +63,8 @@ object PixivAccountFactory {
         //        .encode(sha256.convert(ascii.encode(Constants.code_verifier!)).bytes)
         //        .replaceAll('=', '');
         val challenge = Base64.UrlSafe.encode(
-            HASH.hashBlocking(
-                verify.encodeToByteArray()
-            )
+                verify.encodeToByteArray().toByteString().sha256().toByteArray()
+
         ).replace("=", "")
         return PixivVerification(engineFactory, challenge, verify)
     }

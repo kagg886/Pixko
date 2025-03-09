@@ -1,31 +1,30 @@
 package top.kagg886.pixko
 
-import io.ktor.client.engine.okhttp.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import top.kagg886.pixko.module.illust.getRecommendIllust
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Duration.Companion.seconds
 
 class AuthTest {
     @Test
     fun testRandomVerify() {
-        val account = PixivAccountFactory.newAccount(OkHttp)
+        val account = TestPixivAccountFactory.newAccount()
 
         assertEquals(128, account.codeVerify.length)
     }
 
     @Test
-    fun testChallenge(): Unit = runBlocking {
+    fun testChallenge() = runTest(timeout = 30.seconds) {
         //from Pixiv-Shaft
-        val account = PixivAccountFactory.newAccount(OkHttp,"-29P7XEuFCNdG-1aiYZ9tTeYrABWRHxS9ZVNr6yrdcI")
-
+        val account = TestPixivAccountFactory.newAccount("-29P7XEuFCNdG-1aiYZ9tTeYrABWRHxS9ZVNr6yrdcI")
         assertEquals("usItTkssolVsmIbxrf0o-O_FsdvZFANVPCf9jP4jP_0", account.codeChallenge)
     }
 
     @Test
-    fun testNewAuth(): Unit = runBlocking {
-        val auth = PixivAccountFactory.newAccount(OkHttp)
+    fun testNewAuth() = runTest {
+        val auth = TestPixivAccountFactory.newAccount()
 
         println(auth.url)
 
@@ -33,14 +32,10 @@ class AuthTest {
     }
 
     @Test
-    fun testFailAccessTokenGen(): Unit = runBlocking {
-        val client = PixivAccountFactory.newAccountFromConfig(OkHttp) {
+    fun testFailAccessTokenGen() = runTest {
+        val client = TestPixivAccountFactory.newAccountFromConfig {
             config = {
-                engine {
-                    config {
-                        followRedirects(true)
-                    }
-                }
+                followRedirects = true
             }
 
             storage = InMemoryTokenStorage().apply {
@@ -55,11 +50,10 @@ class AuthTest {
 
     companion object {
         fun generatePixivAccount() =
-            PixivAccountFactory.newAccountFromConfig(OkHttp) {
+            TestPixivAccountFactory.newAccountFromConfig {
                 storage = InMemoryTokenStorage().apply {
                     setToken(TokenType.REFRESH, "xtkew_VEEQOxOW2xUeNE_Y8cX1g--Fhw9CtBAC6BVPQ")
                 }
             }
     }
-
 }

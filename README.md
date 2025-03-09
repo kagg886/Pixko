@@ -6,7 +6,7 @@ Pixko是一个适用于pixiv-android的库。
 
 ## 引入
 
-> 至少需要三个工具才能正常工作：
+> 至少需要两个工具才能正常工作：
 
 1. 引入本体
 
@@ -19,18 +19,6 @@ implementation("top.kagg886:pixko:${pixiv_version}")
 ```kotlin
 implementation("io.ktor:ktor-client-cio:${ktor_latest}")
 ```
-
-3. 引入[加密套件](https://github.com/whyoleg/cryptography-kotlin)
-
-```kotlin
-//on ios
-implementation("dev.whyoleg.cryptography:cryptography-provider-apple")
-
-//on jvm
-implementation("dev.whyoleg.cryptography:cryptography-provider-jdk")
-
-```
-
 
 
 ## 功能

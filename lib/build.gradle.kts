@@ -112,6 +112,12 @@ mavenPublishing {
                 name = "kagg886"
                 url = "https://github.com/kagg886/"
             }
+
+            developer {
+                id = "Akari"
+                name = "Akari"
+                url = "https://github.com/iAkariAk/"
+            }
         }
         scm {
             url = "https://github.com/kagg886/Pixko/"

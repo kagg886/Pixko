@@ -1,21 +1,20 @@
 package top.kagg886.pixko
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import top.kagg886.pixko.module.illust.deleteIllustComment
 import top.kagg886.pixko.module.illust.getIllustComment
 import top.kagg886.pixko.module.illust.getIllustCommentReply
 import top.kagg886.pixko.module.illust.sendIllustComment
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class IllustCommentTest {
+class IllustCommentTest : TestWithClient() {
     @Test
-    fun testCommentList(): Unit = runBlocking {
+    fun testCommentList() = runTest {
         val list = client.getIllustComment(120472631)
     }
 
     @Test
-    fun testSendComment(): Unit = runBlocking {
+    fun testSendComment() = runTest {
         val result = client.sendIllustComment {
             comment = "测试评论"
             illustId = 120472631
@@ -24,7 +23,7 @@ class IllustCommentTest {
     }
 
     @Test
-    fun testSendCommentReply(): Unit = runBlocking {
+    fun testSendCommentReply() = runTest {
         val result = client.sendIllustComment {
             comment = "测试回复"
             illustId = 120472631
@@ -34,23 +33,15 @@ class IllustCommentTest {
     }
 
     @Test
-    fun testCommentDelete(): Unit = runBlocking {
+    fun testCommentDelete() = runTest {
         val result = client.deleteIllustComment(181680577)
         println(result)
     }
 
     @Test
-    fun testCommentReplyList(): Unit = runBlocking {
+    fun testCommentReplyList() = runTest {
         val result = client.getIllustCommentReply(181680577)
         println(result)
     }
 
-    companion object {
-        lateinit var client: PixivAccount
-
-        @BeforeTest
-        fun preparePixivClient() {
-            client = AuthTest.generatePixivAccount()
-        }
-    }
 }

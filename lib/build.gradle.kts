@@ -86,6 +86,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.ktor.client.logging)
             }
         }
 
@@ -145,9 +146,6 @@ android {
     defaultConfig {
         minSdk = 21
     }
-}
-dependencies {
-    implementation("io.ktor:ktor-client-okhttp-jvm:3.0.3")
 }
 
 

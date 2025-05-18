@@ -1,5 +1,9 @@
 package top.kagg886.pixko
 
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import kotlinx.coroutines.test.runTest
 import top.kagg886.pixko.module.illust.getRecommendIllust
 import kotlin.test.Test

@@ -156,7 +156,7 @@ mavenPublishing {
             sourcesJar = true,
         )
     )
-    publishToMavenCentral(SonatypeHost.S01)
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
     coordinates(group.toString(), rootProject.name, version.toString())
     pom {

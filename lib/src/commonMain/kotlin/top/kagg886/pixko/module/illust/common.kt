@@ -1,6 +1,6 @@
 package top.kagg886.pixko.module.illust
 
-import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -12,6 +12,8 @@ import top.kagg886.pixko.User
 import top.kagg886.pixko.module.illust.Illust.LimitLevel.*
 import top.kagg886.pixko.module.novel.Novel
 import kotlin.reflect.KProperty1
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * # 插画包装列表
@@ -61,6 +63,7 @@ data class ImageUrlsWrapper(
  * @property illustAiType AI-tag标记，不建议使用。建议使用[isAI]
  * @property singlePageMeta 单页原画数据，不建议使用。建议使用[singlePageMeta]
  */
+@OptIn(ExperimentalTime::class)
 @Serializable
 data class Illust(
     val id: Int,
@@ -72,6 +75,7 @@ data class Illust(
 
     val user: User,
     val tags: List<Tag>,
+    @Contextual
     @SerialName("create_date") val createTime: Instant,
 
     @SerialName("page_count") val pageCount: Int,

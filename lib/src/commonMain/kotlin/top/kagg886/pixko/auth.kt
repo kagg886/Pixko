@@ -10,7 +10,6 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.datetime.Clock
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -21,6 +20,8 @@ import top.kagg886.pixko.internal.json
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.random.Random
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 //从APK中提取，不解释
 internal const val pixiv_client_id = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
@@ -34,6 +35,7 @@ internal const val pixiv_client_secret = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrd
  */
 object PixivAccountFactory {
     private const val CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+    @OptIn(ExperimentalTime::class)
     private val RANDOM = Random(Clock.System.now().toEpochMilliseconds())
 //    private val HASH = CryptographyProvider.Default
 //        .get(SHA256)

@@ -10,6 +10,7 @@ class NovelCommentTest : TestWithClient() {
     @Test
     fun testCommentList() = runTest {
         val list = client.getNovelComment(21844391)
+        println(list)
     }
 
 

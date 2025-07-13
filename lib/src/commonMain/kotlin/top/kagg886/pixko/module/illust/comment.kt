@@ -4,12 +4,14 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import top.kagg886.pixko.PixivAccount
 import top.kagg886.pixko.User
 import kotlin.properties.Delegates
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Serializable
 internal data class CommentListResult(
@@ -29,10 +31,12 @@ internal data class CommentListResult(
  * @property hasReplies 是否有回复，若该评论本身为回复则永远为false
  * @property stamp 评论的大表情，该项不为null时，comment为空
  */
+@OptIn(ExperimentalTime::class)
 @Serializable
 data class Comment(
     val id: Long,
     val comment: String,
+    @Contextual
     val date: Instant,
     val user: User,
     @SerialName("has_replies")

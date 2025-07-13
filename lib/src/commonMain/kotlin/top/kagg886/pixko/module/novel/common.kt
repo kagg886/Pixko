@@ -1,11 +1,13 @@
 package top.kagg886.pixko.module.novel
 
-import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import top.kagg886.pixko.ImageUrls
 import top.kagg886.pixko.Tag
 import top.kagg886.pixko.User
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Serializable
 data class NovelResult(
@@ -29,6 +31,7 @@ data class NovelResult(
  * @property totalComments 小说评论数
  * @property novelAiType 小说ai-tag，建议使用[isAI]
  */
+@OptIn(ExperimentalTime::class)
 @Serializable
 data class Novel(
     val id: Int,
@@ -39,6 +42,7 @@ data class Novel(
     val imageUrls: ImageUrls,
 
     @SerialName("create_date")
+    @Contextual
     val createDate: Instant,
     val tags: List<Tag>,
 //    @SerialName("page_count")

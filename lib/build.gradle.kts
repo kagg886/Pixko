@@ -37,7 +37,7 @@ kotlin {
     }
 
     js(IR) {
-        moduleName = project.name
+        outputModuleName = project.name
         browser {
             testTask {
                 useMocha(mochaConfig)
@@ -50,7 +50,7 @@ kotlin {
         }
     }
     wasmJs {
-        moduleName = project.name
+        outputModuleName = project.name
         browser {
             testTask {
                 useMocha(mochaConfig)

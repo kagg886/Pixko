@@ -1,6 +1,5 @@
 package top.kagg886.pixko
 
-import kotlinx.datetime.Instant
 import top.kagg886.pixko.anno.ExperimentalNovelParserAPI
 import top.kagg886.pixko.module.novel.parser.createNovelData
 import top.kagg886.pixko.module.novel.parser.toOriginalString
@@ -10,8 +9,11 @@ import top.kagg886.pixko.module.profile.CountryCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class OtherTest {
+    @OptIn(ExperimentalTime::class)
     @Test
     fun testLocalDateTime() {
         println(Instant.parse("2022-07-17T13:16:49+09:00"))
